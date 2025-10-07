@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building2, Users, Home } from "lucide-react";
-import rentoLogo from "@/assets/rento-logo-dark.svg";
+import rentoLogo from "@/assets/rento-logo-dark.svg"; // ✅ Using the dark logo
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -12,27 +12,34 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // ✅ Separate actions for clarity
   const handleSignUp = () => {
-    // Navigate based on user type
-    if (userType === "tenant") {
-      navigate("/tenant");
-    } else if (userType === "manager") {
-      navigate("/manager");
-    } else {
-      navigate("/broker");
-    }
+    if (userType === "tenant") navigate("/tenant");
+    else if (userType === "manager") navigate("/manager");
+    else navigate("/broker");
+  };
+
+  const handleLogin = () => {
+    // In the future, authenticate first
+    if (userType === "tenant") navigate("/tenant");
+    else if (userType === "manager") navigate("/manager");
+    else navigate("/broker");
   };
 
   return (
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Logo & Tagline */}
+        {/* ✅ Logo & Tagline */}
         <div className="text-center mb-8 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary mb-4">
-            <Building2 className="w-8 h-8 text-primary-foreground" />
-          </div>
-          <h1 className="text-4xl font-bold text-primary mb-2">Rento</h1>
-          <p className="text-muted-foreground">Revolutionizing the Rental Experience</p>
+          <img
+            src={rentoLogo}
+            alt="Rento"
+            className="h-12 w-auto mx-auto mb-4"
+          />
+          <h1 className="text-4xl font-bold text-primary mb-2 font-heading">Rento</h1>
+          <p className="text-muted-foreground">
+            Revolutionizing the Rental Experience
+          </p>
         </div>
 
         {/* Auth Card */}
@@ -43,10 +50,13 @@ const Auth = () => {
               <TabsTrigger value="login">Login</TabsTrigger>
             </TabsList>
 
+            {/* 🧾 Sign Up Tab */}
             <TabsContent value="signup" className="space-y-6">
               {/* User Type Selection */}
               <div className="space-y-3">
-                <label className="text-sm font-medium text-foreground">Sign up as</label>
+                <label className="text-sm font-medium text-foreground">
+                  Sign up as
+                </label>
                 <div className="grid grid-cols-3 gap-3">
                   <button
                     onClick={() => setUserType("tenant")}
@@ -115,6 +125,7 @@ const Auth = () => {
               </p>
             </TabsContent>
 
+            {/* 🔐 Login Tab */}
             <TabsContent value="login" className="space-y-6">
               <div className="space-y-4">
                 <Input
@@ -134,7 +145,7 @@ const Auth = () => {
               </div>
 
               <Button
-                onClick={handleSignUp}
+                onClick={handleLogin}
                 className="w-full h-12 bg-gradient-primary hover:opacity-90 transition-opacity"
               >
                 Login
