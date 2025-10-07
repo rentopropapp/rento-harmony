@@ -2,12 +2,14 @@ import { useState } from "react";
 import { Users, AlertCircle, Calendar, Wallet, FileText, Edit, UserCog, UserCheck, ScrollText } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import rentoLogo from "@/assets/rento-logo-dark.svg";
 
 const ManagerDashboard = () => {
   const navigate = useNavigate();
-  const [selectedProperty] = useState("Hillview Apartment");
+  const location = useLocation();
+  const property = location.state?.property;
+  const [selectedProperty] = useState(property?.name || "Hillview Apartment");
 
   const dashboardStats = [
     { 
@@ -15,7 +17,8 @@ const ManagerDashboard = () => {
       value: "8", 
       icon: Users, 
       color: "bg-primary",
-      route: "/manager/tenants"
+      route: "/manager/tenants",
+      state: { property }
     },
     { 
       title: "Complaints", 
@@ -29,7 +32,8 @@ const ManagerDashboard = () => {
       value: "5", 
       icon: Calendar, 
       color: "bg-success",
-      route: "/manager/bookings"
+      route: "/manager/bookings",
+      state: { property }
     },
     { 
       title: "Payments", 
@@ -44,7 +48,7 @@ const ManagerDashboard = () => {
     { label: "Property Expenses", icon: FileText, route: "#" },
     { label: "Edit Property", icon: Edit, route: "#" },
     { label: "Users & Roles", icon: UserCog, route: "#" },
-    { label: "Tenant Management", icon: UserCheck, route: "/manager/tenants" },
+    { label: "Tenant Management", icon: UserCheck, route: "/manager/tenants", state: { property } },
     { label: "Tenant Agreement", icon: ScrollText, route: "#" },
   ];
 
@@ -61,18 +65,34 @@ const ManagerDashboard = () => {
               <h1 className="text-2xl font-bold text-primary">Rento</h1>
             </div>
             <nav className="hidden md:flex space-x-6">
-              <a href="/manager" className="text-foreground hover:text-primary transition-colors">
+              <Button
+                variant="link"
+                onClick={() => navigate("/manager/dashboard", { state: { property } })}
+                className="text-foreground hover:text-primary transition-colors p-0 h-auto"
+              >
                 Dashboard
-              </a>
-              <a href="/manager/tenants" className="text-muted-foreground hover:text-primary transition-colors">
+              </Button>
+              <Button
+                variant="link"
+                onClick={() => navigate("/manager/tenants", { state: { property } })}
+                className="text-muted-foreground hover:text-primary transition-colors p-0 h-auto"
+              >
                 Tenants
-              </a>
-              <a href="/manager/bookings" className="text-muted-foreground hover:text-primary transition-colors">
+              </Button>
+              <Button
+                variant="link"
+                onClick={() => navigate("/manager/bookings", { state: { property } })}
+                className="text-muted-foreground hover:text-primary transition-colors p-0 h-auto"
+              >
                 Bookings
-              </a>
-              <a href="/manager/profile" className="text-muted-foreground hover:text-primary transition-colors">
+              </Button>
+              <Button
+                variant="link"
+                onClick={() => navigate("/manager/profile", { state: { property } })}
+                className="text-muted-foreground hover:text-primary transition-colors p-0 h-auto"
+              >
                 Profile
-              </a>
+              </Button>
             </nav>
             <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center cursor-pointer">
               <span className="text-sm font-medium">PM</span>
@@ -95,7 +115,7 @@ const ManagerDashboard = () => {
             <Card 
               key={stat.title} 
               className="p-6 cursor-pointer hover:shadow-lg transition-shadow animate-fade-in"
-              onClick={() => stat.route !== "#" && navigate(stat.route)}
+              onClick={() => stat.route !== "#" && navigate(stat.route, { state: stat.state })}
             >
               <div className="flex items-center justify-between mb-4">
                 <div className={`w-12 h-12 rounded-lg ${stat.color} flex items-center justify-center`}>
@@ -117,7 +137,7 @@ const ManagerDashboard = () => {
                 key={button.label}
                 variant="outline"
                 className="h-auto py-4 flex items-center justify-start gap-3"
-                onClick={() => button.route !== "#" && navigate(button.route)}
+                onClick={() => button.route !== "#" && navigate(button.route, { state: button.state })}
               >
                 <button.icon className="w-5 h-5" />
                 <span>{button.label}</span>
