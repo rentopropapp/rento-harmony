@@ -76,8 +76,7 @@ const PropertyDetailsForm = () => {
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log("Property details submitted:", { ...data, propertyType });
-    // TODO: Handle form submission (save to database)
-    navigate("/manager/home");
+    navigate("/manager/add-images", { state: { propertyDetails: { ...data, propertyType } } });
   };
 
   return (
