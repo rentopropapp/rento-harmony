@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import rentoLogo from "@/assets/rento-logo-light.svg";
+import rentoLogo from "@/assets/rento-logo-dark.svg";
 
 const BrokerHome = () => {
   return (
