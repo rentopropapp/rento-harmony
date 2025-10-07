@@ -2,113 +2,145 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RoleSelector } from "@/components/RoleSelector";
-import rentoLogo from "@/assets/rento-logo-light.svg";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Building2, Users, Home } from "lucide-react";
+import rentoLogo from "@/assets/rento-logo-dark.svg";
 
 const Auth = () => {
   const navigate = useNavigate();
-  const [selectedRole, setSelectedRole] = useState<"tenant" | "broker" | "manager" | null>(null);
+  const [userType, setUserType] = useState<"tenant" | "manager" | "broker">("tenant");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isSignUp, setIsSignUp] = useState(true);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (isSignUp && !selectedRole) {
-      return;
-    }
-
-    // Navigate based on role
-    if (selectedRole === "tenant") {
-      navigate("/tenant/home");
-    } else if (selectedRole === "broker") {
-      navigate("/broker/home");
-    } else if (selectedRole === "manager") {
-      navigate("/manager/home");
+  const handleSignUp = () => {
+    // Navigate based on user type
+    if (userType === "tenant") {
+      navigate("/tenant");
+    } else if (userType === "manager") {
+      navigate("/manager");
+    } else {
+      navigate("/broker");
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
-      <div className="w-full max-w-4xl">
-        <div className="mb-8 text-center fade-in">
-          <img
-            src={rentoLogo}
-            alt="Rento Logo"
-            className="mx-auto mb-6 h-16 w-auto"
-          />
-          <h1 className="mb-3 font-heading text-4xl font-bold text-primary">
-            Welcome to Rento
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            Revolutionizing the Rental Experience
-          </p>
+    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Logo & Tagline */}
+        <div className="text-center mb-8 animate-fade-in">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary mb-4">
+            <Building2 className="w-8 h-8 text-primary-foreground" />
+          </div>
+          <h1 className="text-4xl font-bold text-primary mb-2">Rento</h1>
+          <p className="text-muted-foreground">Revolutionizing the Rental Experience</p>
         </div>
 
-        <div className="mx-auto max-w-md rounded-2xl bg-card p-8 shadow-card fade-in">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {isSignUp && (
-              <div className="space-y-4">
-                <Label className="text-base font-semibold">
-                  I want to sign up as:
-                </Label>
-                <RoleSelector
-                  selectedRole={selectedRole}
-                  onSelectRole={setSelectedRole}
-                />
-              </div>
-            )}
+        {/* Auth Card */}
+        <div className="bg-card rounded-2xl shadow-lg p-8 animate-slide-up">
+          <Tabs defaultValue="signup" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsTrigger value="login">Login</TabsTrigger>
+            </TabsList>
 
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+            <TabsContent value="signup" className="space-y-6">
+              {/* User Type Selection */}
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-foreground">Sign up as</label>
+                <div className="grid grid-cols-3 gap-3">
+                  <button
+                    onClick={() => setUserType("tenant")}
+                    className={`p-4 rounded-xl border-2 transition-all ${
+                      userType === "tenant"
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <Home className="w-6 h-6 mx-auto mb-2 text-primary" />
+                    <p className="text-xs font-medium">Tenant</p>
+                  </button>
+                  <button
+                    onClick={() => setUserType("manager")}
+                    className={`p-4 rounded-xl border-2 transition-all ${
+                      userType === "manager"
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <Building2 className="w-6 h-6 mx-auto mb-2 text-primary" />
+                    <p className="text-xs font-medium">Manager</p>
+                  </button>
+                  <button
+                    onClick={() => setUserType("broker")}
+                    className={`p-4 rounded-xl border-2 transition-all ${
+                      userType === "broker"
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <Users className="w-6 h-6 mx-auto mb-2 text-primary" />
+                    <p className="text-xs font-medium">Broker</p>
+                  </button>
+                </div>
+              </div>
+
+              {/* Input Fields */}
+              <div className="space-y-4">
                 <Input
-                  id="email"
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder="Email Address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
                   className="h-12"
                 />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
                 <Input
-                  id="password"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
                   className="h-12"
                 />
               </div>
-            </div>
 
-            <Button
-              type="submit"
-              className="h-12 w-full bg-gradient-primary font-semibold"
-              disabled={isSignUp && !selectedRole}
-            >
-              {isSignUp ? "Sign Up" : "Sign In"}
-            </Button>
-
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={() => setIsSignUp(!isSignUp)}
-                className="text-sm text-primary hover:underline"
+              {/* Sign Up Button */}
+              <Button
+                onClick={handleSignUp}
+                className="w-full h-12 bg-gradient-primary hover:opacity-90 transition-opacity"
               >
-                {isSignUp
-                  ? "Already have an account? Sign In"
-                  : "Don't have an account? Sign Up"}
-              </button>
-            </div>
-          </form>
+                Sign Up
+              </Button>
+
+              <p className="text-center text-sm text-muted-foreground">
+                By signing up, you agree to our Terms & Privacy Policy
+              </p>
+            </TabsContent>
+
+            <TabsContent value="login" className="space-y-6">
+              <div className="space-y-4">
+                <Input
+                  type="email"
+                  placeholder="Email Address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-12"
+                />
+                <Input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="h-12"
+                />
+              </div>
+
+              <Button
+                onClick={handleSignUp}
+                className="w-full h-12 bg-gradient-primary hover:opacity-90 transition-opacity"
+              >
+                Login
+              </Button>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
