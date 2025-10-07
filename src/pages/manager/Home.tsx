@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import rentoLogo from "@/assets/rento-logo-light.svg";
 
 const ManagerHome = () => {
+  const navigate = useNavigate();
+  
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
@@ -20,7 +23,7 @@ const ManagerHome = () => {
           <p className="mb-8 text-lg text-muted-foreground">
             Manage your properties, tenants, and bookings
           </p>
-          <Button className="h-12 px-8">
+          <Button className="h-12 px-8" onClick={() => navigate("/manager/add-property")}>
             <Plus className="mr-2 h-5 w-5" />
             Add Property for Management
           </Button>
