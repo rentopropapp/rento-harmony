@@ -1,0 +1,154 @@
+import { useState } from "react";
+import { Users, AlertCircle, Calendar, Wallet, FileText, Edit, UserCog, UserCheck, ScrollText } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import rentoLogo from "@/assets/rento-logo-dark.svg";
+
+const ManagerDashboard = () => {
+  const navigate = useNavigate();
+  const [selectedProperty] = useState("Hillview Apartment");
+
+  const dashboardStats = [
+    { 
+      title: "Tenants", 
+      value: "8", 
+      icon: Users, 
+      color: "bg-primary",
+      route: "/manager/tenants"
+    },
+    { 
+      title: "Complaints", 
+      value: "3", 
+      icon: AlertCircle, 
+      color: "bg-warning",
+      route: "#"
+    },
+    { 
+      title: "Bookings", 
+      value: "5", 
+      icon: Calendar, 
+      color: "bg-success",
+      route: "/manager/bookings"
+    },
+    { 
+      title: "Payments", 
+      value: "UGX 12.4M", 
+      icon: Wallet, 
+      color: "bg-primary",
+      route: "#"
+    },
+  ];
+
+  const actionButtons = [
+    { label: "Property Expenses", icon: FileText, route: "#" },
+    { label: "Edit Property", icon: Edit, route: "#" },
+    { label: "Users & Roles", icon: UserCog, route: "#" },
+    { label: "Tenant Management", icon: UserCheck, route: "/manager/tenants" },
+    { label: "Tenant Agreement", icon: ScrollText, route: "#" },
+  ];
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="bg-card border-b border-border sticky top-0 z-10">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                <span className="text-primary-foreground font-semibold text-lg">R</span>
+              </div>
+              <h1 className="text-2xl font-bold text-primary">Rento</h1>
+            </div>
+            <nav className="hidden md:flex space-x-6">
+              <a href="/manager" className="text-foreground hover:text-primary transition-colors">
+                Dashboard
+              </a>
+              <a href="/manager/tenants" className="text-muted-foreground hover:text-primary transition-colors">
+                Tenants
+              </a>
+              <a href="/manager/bookings" className="text-muted-foreground hover:text-primary transition-colors">
+                Bookings
+              </a>
+              <a href="/manager/profile" className="text-muted-foreground hover:text-primary transition-colors">
+                Profile
+              </a>
+            </nav>
+            <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center cursor-pointer">
+              <span className="text-sm font-medium">PM</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-8">
+        {/* Selected Property */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold text-foreground mb-2">Property Dashboard</h2>
+          <p className="text-muted-foreground">Selected Property: <span className="font-medium text-foreground">{selectedProperty}</span></p>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {dashboardStats.map((stat) => (
+            <Card 
+              key={stat.title} 
+              className="p-6 cursor-pointer hover:shadow-lg transition-shadow animate-fade-in"
+              onClick={() => stat.route !== "#" && navigate(stat.route)}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className={`w-12 h-12 rounded-lg ${stat.color} flex items-center justify-center`}>
+                  <stat.icon className="w-6 h-6 text-white" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-1">{stat.value}</h3>
+              <p className="text-muted-foreground text-sm">{stat.title}</p>
+            </Card>
+          ))}
+        </div>
+
+        {/* Action Buttons */}
+        <div className="mb-8">
+          <h3 className="text-xl font-semibold text-foreground mb-4">Property Management</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {actionButtons.map((button) => (
+              <Button
+                key={button.label}
+                variant="outline"
+                className="h-auto py-4 flex items-center justify-start gap-3"
+                onClick={() => button.route !== "#" && navigate(button.route)}
+              >
+                <button.icon className="w-5 h-5" />
+                <span>{button.label}</span>
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Monthly Summary */}
+        <Card className="p-6">
+          <h3 className="text-xl font-semibold text-foreground mb-4">Monthly Summary</h3>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Total Revenue</span>
+              <span className="font-semibold text-foreground">UGX 15,000,000</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Property Expenses</span>
+              <span className="font-semibold text-danger">- UGX 2,600,000</span>
+            </div>
+            <div className="border-t border-border pt-3 mt-3">
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-foreground">Net Earnings</span>
+                <span className="font-bold text-success text-xl">UGX 12,400,000</span>
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default ManagerDashboard;
