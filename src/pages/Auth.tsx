@@ -14,16 +14,15 @@ const Auth = () => {
 
   // ✅ Separate actions for clarity
   const handleSignUp = () => {
-    if (userType === "tenant") navigate("/tenant");
-    else if (userType === "manager") navigate("/manager");
-    else navigate("/broker");
+    if (userType === "tenant") navigate("/tenant/home");
+    else if (userType === "manager") navigate("/manager/home");
+    else navigate("/broker/home");
   };
 
   const handleLogin = () => {
-    // In the future, authenticate first
-    if (userType === "tenant") navigate("/tenant");
-    else if (userType === "manager") navigate("/manager");
-    else navigate("/broker");
+    if (userType === "tenant") navigate("/tenant/home");
+    else if (userType === "manager") navigate("/manager/home");
+    else navigate("/broker/home");
   };
 
   return (
