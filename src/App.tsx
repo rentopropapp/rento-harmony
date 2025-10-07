@@ -4,22 +4,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Auth from "./pages/Auth";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
 import TenantHome from "./pages/tenant/Home";
 import BrokerHome from "./pages/broker/Home";
-import BrokerAddProperty from "./pages/broker/AddProperty";
-import BrokerPropertyDetailsForm from "./pages/broker/PropertyDetailsForm";
-import BrokerAddImages from "./pages/broker/addimages";
 import ManagerHome from "./pages/manager/Home";
-import ManagerAddProperty from "./pages/manager/AddProperty";
-import ManagerPropertyDetailsForm from "./pages/manager/PropertyDetailsForm";
-import ManagerAddImages from "./pages/manager/addimages";
-import ManagerBookings from "./pages/manager/ManagerBookings";
-import ManagerDashboard from "./pages/manager/ManagerDashboard";
-import ManagerProfile from "./pages/manager/ManagerProfile";
-import ManagerTenants from "./pages/manager/ManagerTenants";
-import PropertyList from "./pages/manager/propertylist";
+import AddProperty from "./pages/manager/AddProperty";
+import PropertyDetailsForm from "./pages/manager/PropertyDetailsForm";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
