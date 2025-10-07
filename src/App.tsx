@@ -8,6 +8,7 @@ import TenantHome from "./pages/tenant/Home";
 import BrokerHome from "./pages/broker/Home";
 import ManagerHome from "./pages/manager/Home";
 import AddProperty from "./pages/manager/AddProperty";
+import PropertyDetailsForm from "./pages/manager/PropertyDetailsForm";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/broker/home" element={<BrokerHome />} />
           <Route path="/manager/home" element={<ManagerHome />} />
           <Route path="/manager/add-property" element={<AddProperty />} />
+          <Route path="/manager/property-details" element={<PropertyDetailsForm />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

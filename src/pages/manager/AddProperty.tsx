@@ -27,8 +27,10 @@ const AddProperty = () => {
   const navigate = useNavigate();
 
   const handlePropertyTypeSelect = (typeId: string) => {
-    console.log("Selected property type:", typeId);
-    // Navigate to next step (to be implemented)
+    const selectedType = propertyTypes.find((type) => type.id === typeId);
+    navigate("/manager/property-details", {
+      state: { propertyType: selectedType?.name },
+    });
   };
 
   return (
