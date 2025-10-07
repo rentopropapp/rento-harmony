@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Search, MapPin, Menu } from "lucide-react";
-import rentoLogo from "@/assets/rento-logo-light.svg";
+import rentoLogo from "@/assets/rento-logo-dark.svg";
 
 const TenantHome = () => {
   const [searchQuery, setSearchQuery] = useState("");
