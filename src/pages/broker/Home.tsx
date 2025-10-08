@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import rentoLogo from "@/assets/rento-logo-dark.svg";
 
 const BrokerHome = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
@@ -20,7 +22,10 @@ const BrokerHome = () => {
           <p className="mb-8 text-lg text-muted-foreground">
             Start listing properties and managing your clients
           </p>
-          <Button className="h-12 px-8">
+          <Button 
+            className="h-12 px-8"
+            onClick={() => navigate("/broker/add-property")}
+          >
             <Plus className="mr-2 h-5 w-5" />
             Add Property
           </Button>
