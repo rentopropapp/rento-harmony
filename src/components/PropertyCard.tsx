@@ -83,3 +83,5 @@ export const PropertyCard = ({
     </Card>
   );
 };
+
+export default PropertyCard;

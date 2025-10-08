@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, MapPin, Home, ArrowLeft } from "lucide-react";
+import { Plus, MapPin, Home, ArrowLeft, Settings } from "lucide-react";
 import rentoLogo from "@/assets/rento-logo-dark.svg";
 
 // Example mock data — replace this with your real data source
@@ -102,9 +102,16 @@ const ManagerProperties = () => {
                     <MapPin className="mr-1 h-4 w-4 text-primary" />
                     {property.location}
                   </div>
-                  <p className="text-sm font-medium text-foreground">
+                  <p className="text-sm font-medium text-foreground mb-4">
                     {property.rent}
                   </p>
+                  <Button
+                    onClick={() => navigate("/manager/dashboard", { state: { property } })}
+                    className="w-full"
+                  >
+                    <Settings className="mr-2 h-4 w-4" />
+                    Manage Property
+                  </Button>
                 </div>
               </Card>
             ))}

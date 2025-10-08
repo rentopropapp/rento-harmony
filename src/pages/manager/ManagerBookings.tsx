@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate, useLocation } from "react-router-dom";
-import rentoLogo from "@/assets/rento-logo-dark.svg";
+import { ManagerTopNav, ManagerBottomNav } from "@/components/ManagerNavigation";
 
 const ManagerBookings = () => {
   const navigate = useNavigate();
@@ -82,53 +82,8 @@ const ManagerBookings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-semibold text-lg">R</span>
-              </div>
-              <h1 className="text-2xl font-bold text-primary">Rento</h1>
-            </div>
-            <nav className="hidden md:flex space-x-6">
-              <Button
-                variant="link"
-                onClick={() => navigate("/manager/dashboard", { state: { property } })}
-                className="text-muted-foreground hover:text-primary transition-colors p-0 h-auto"
-              >
-                Dashboard
-              </Button>
-              <Button
-                variant="link"
-                onClick={() => navigate("/manager/tenants", { state: { property } })}
-                className="text-muted-foreground hover:text-primary transition-colors p-0 h-auto"
-              >
-                Tenants
-              </Button>
-              <Button
-                variant="link"
-                onClick={() => navigate("/manager/bookings", { state: { property } })}
-                className="text-foreground hover:text-primary transition-colors p-0 h-auto"
-              >
-                Bookings
-              </Button>
-              <Button
-                variant="link"
-                onClick={() => navigate("/manager/profile", { state: { property } })}
-                className="text-muted-foreground hover:text-primary transition-colors p-0 h-auto"
-              >
-                Profile
-              </Button>
-            </nav>
-            <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center cursor-pointer">
-              <span className="text-sm font-medium">PM</span>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-background pb-20 md:pb-8">
+      <ManagerTopNav property={property} />
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
@@ -213,6 +168,8 @@ const ManagerBookings = () => {
           ))}
         </div>
       </div>
+
+      <ManagerBottomNav property={property} />
     </div>
   );
 };
