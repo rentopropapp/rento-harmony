@@ -3,6 +3,14 @@ import { Mail, MessageCircle, Calendar, Trash2, Plus } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ManagerTopNav, ManagerBottomNav } from "@/components/ManagerNavigation";
 
@@ -48,19 +56,10 @@ const ManagerTenants = () => {
       status: "overdue",
       rent: "950,000",
     },
-    {
-      id: 4,
-      name: "Grace Achieng",
-      property: "Hillview Apartment - Unit 1A",
-      email: "grace.achieng@email.com",
-      phone: "+256700456789",
-      bio: "Nurse, 6 months with Rento",
-      lastPaid: "2024-10-02",
-      nextDue: "2024-11-02",
-      status: "paid",
-      rent: "800,000",
-    },
   ]);
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [tenantToDelete, setTenantToDelete] = useState<number | null>(null);
 
   // ===== Utility Functions =====
   const getStatusColor = (status: string) => {
@@ -106,11 +105,18 @@ const ManagerTenants = () => {
     }
   };
 
-  // ===== Delete Tenant =====
-  const handleDeleteTenant = (id: number) => {
-    if (window.confirm("Are you sure you want to remove this tenant?")) {
-      setTenants((prev) => prev.filter((t) => t.id !== id));
+  // ===== Delete Tenant with Modal =====
+  const confirmDeleteTenant = (id: number) => {
+    setTenantToDelete(id);
+    setOpenDialog(true);
+  };
+
+  const handleDeleteTenant = () => {
+    if (tenantToDelete !== null) {
+      setTenants((prev) => prev.filter((t) => t.id !== tenantToDelete));
+      setTenantToDelete(null);
     }
+    setOpenDialog(false);
   };
 
   // ===== Add Tenant Navigation =====
@@ -141,17 +147,6 @@ const ManagerTenants = () => {
                 key={tenant.id}
                 className="p-6 transition-all hover:border-primary/60 hover:shadow-sm relative"
               >
-                {/* Delete Button (Top Right Corner) */}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleDeleteTenant(tenant.id)}
-                  className="absolute top-4 right-4 text-red-600 hover:bg-red-50"
-                  title="Delete Tenant"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-
                 <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                   {/* Tenant Info */}
                   <div className="flex-1">
@@ -197,7 +192,7 @@ const ManagerTenants = () => {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex flex-col items-end gap-3">
+                  <div className="flex flex-col items-end gap-3 w-full md:w-auto">
                     <Badge
                       variant="outline"
                       className={`${getStatusColor(
@@ -208,16 +203,20 @@ const ManagerTenants = () => {
                     </Badge>
 
                     <div className="text-right">
-                      <p className="text-sm text-muted-foreground">Monthly Rent</p>
+                      <p className="text-sm text-muted-foreground">
+                        Monthly Rent
+                      </p>
                       <p className="text-lg font-bold text-foreground">
                         UGX {tenant.rent}
                       </p>
                     </div>
 
-                    <div className="flex gap-2">
+                    {/* Action Buttons */}
+                    <div className="flex w-full md:w-auto gap-3 justify-end">
                       <Button
                         size="sm"
                         variant="outline"
+                        className="flex-1 md:flex-none px-5"
                         onClick={() => handleSendReminder(tenant, "email")}
                       >
                         <Mail className="mr-2 h-4 w-4" />
@@ -226,6 +225,7 @@ const ManagerTenants = () => {
                       <Button
                         size="sm"
                         variant="outline"
+                        className="flex-1 md:flex-none px-5"
                         onClick={() => handleSendReminder(tenant, "whatsapp")}
                       >
                         <MessageCircle className="mr-2 h-4 w-4" />
@@ -233,6 +233,20 @@ const ManagerTenants = () => {
                       </Button>
                     </div>
                   </div>
+                </div>
+
+                {/* Delete Button at Bottom Right */}
+                <div className="flex justify-end mt-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => confirmDeleteTenant(tenant.id)}
+                    className="text-red-600 hover:bg-red-50"
+                    title="Delete Tenant"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Remove Tenant
+                  </Button>
                 </div>
               </Card>
             ))
@@ -254,6 +268,37 @@ const ManagerTenants = () => {
       </Button>
 
       <ManagerBottomNav property={property} />
+
+      {/* Delete Confirmation Modal */}
+      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+        <DialogContent className="sm:max-w-md bg-card border-border">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-heading text-foreground">
+              Confirm Removal
+            </DialogTitle>
+            <DialogDescription className="text-muted-foreground">
+              Are you sure you want to remove this tenant from your property
+              records? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="flex justify-end gap-3 mt-6">
+            <Button
+              variant="outline"
+              onClick={() => setOpenDialog(false)}
+              className="border-border hover:bg-muted"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleDeleteTenant}
+              className="bg-red-600 text-white hover:bg-red-700"
+            >
+              Remove Tenant
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
