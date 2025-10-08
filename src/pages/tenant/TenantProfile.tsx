@@ -2,6 +2,7 @@ import { Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import TenantBottomNav from "@/components/TenantBottomNav";
 import rentoLogo from "@/assets/rento-logo-dark.svg";
 import { useState } from "react";
 
@@ -17,10 +18,11 @@ const TenantProfile = () => {
             <img src={rentoLogo} alt="Rento" className="h-8" />
             <h1 className="font-heading text-xl font-semibold text-foreground">Rento</h1>
           </div>
-          <nav className="flex gap-6 text-sm">
+          <nav className="hidden md:flex gap-6 text-sm">
+            <a href="/tenant/home" className="text-muted-foreground hover:text-primary">Home</a>
             <a href="/tenant/dashboard" className="text-muted-foreground hover:text-primary">Dashboard</a>
             <a href="/tenant/payments" className="text-muted-foreground hover:text-primary">Payments</a>
-            <a href="#" className="text-primary font-medium">Profile</a>
+            <a href="/tenant/profile" className="text-primary font-medium">Profile</a>
           </nav>
         </div>
       </header>
@@ -58,6 +60,8 @@ const TenantProfile = () => {
           </Button>
         </Card>
       </main>
+
+      <TenantBottomNav />
     </div>
   );
 };

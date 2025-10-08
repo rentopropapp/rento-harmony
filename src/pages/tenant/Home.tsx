@@ -3,7 +3,8 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import PropertyCard from "@/components/PropertyCard";
-import rentoLogo from "@/assets/rento-logo-dark.svg"; // ✅ Use official logo
+import TenantBottomNav from "@/components/TenantBottomNav";
+import rentoLogo from "@/assets/rento-logo-dark.svg";
 
 const TenantHome = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -15,60 +16,66 @@ const TenantHome = () => {
       image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800",
       title: "Hillview Apartment",
       location: "Kampala, Uganda",
-      price: "800,000",
-      bedrooms: 2,
-      bathrooms: 2,
-      type: "Rent",
+      price: "UGX 800,000/mo",
+      beds: 2,
+      baths: 2,
+      area: "85 sqm",
+      type: "rent" as const,
     },
     {
       id: 2,
       image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800",
       title: "Modern Villa",
       location: "Entebbe, Uganda",
-      price: "1,500,000",
-      bedrooms: 4,
-      bathrooms: 3,
-      type: "Sale",
+      price: "UGX 1,500,000",
+      beds: 4,
+      baths: 3,
+      area: "250 sqm",
+      type: "sale" as const,
     },
     {
       id: 3,
       image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800",
       title: "Cozy Studio",
       location: "Nakasero, Kampala",
-      price: "500,000",
-      bedrooms: 1,
-      bathrooms: 1,
-      type: "Rent",
+      price: "UGX 500,000/mo",
+      beds: 1,
+      baths: 1,
+      area: "45 sqm",
+      type: "rent" as const,
     },
     {
       id: 4,
       image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800",
       title: "Family House",
       location: "Kololo, Kampala",
-      price: "2,000,000",
-      bedrooms: 5,
-      bathrooms: 4,
-      type: "Sale",
+      price: "UGX 2,000,000",
+      beds: 5,
+      baths: 4,
+      area: "400 sqm",
+      type: "sale" as const,
     },
     {
       id: 5,
       image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800",
       title: "Luxury Penthouse",
       location: "Bugolobi, Kampala",
-      price: "3,500,000",
-      bedrooms: 3,
-      bathrooms: 3,
-      type: "Rent",
+      price: "UGX 3,500,000/mo",
+      beds: 3,
+      baths: 3,
+      area: "180 sqm",
+      type: "airbnb" as const,
     },
     {
       id: 6,
       image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800",
       title: "Garden Cottage",
       location: "Muyenga, Kampala",
-      price: "950,000",
-      bedrooms: 2,
-      bathrooms: 2,
-      type: "Rent",
+      price: "UGX 950,000/mo",
+      beds: 2,
+      baths: 2,
+      area: "95 sqm",
+      type: "rent" as const,
     },
   ];
 
@@ -86,25 +93,25 @@ const TenantHome = () => {
 
           <nav className="hidden md:flex gap-6 text-sm font-medium">
             <a
-              href="#"
-              className="text-foreground hover:text-primary transition-colors"
+              href="/tenant/home"
+              className="text-primary font-medium transition-colors"
             >
               Home
             </a>
             <a
-              href="#"
+              href="/tenant/dashboard"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
               Dashboard
             </a>
             <a
-              href="#"
+              href="/tenant/payments"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
               Payments
             </a>
             <a
-              href="#"
+              href="/tenant/profile"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
               Profile
@@ -173,11 +180,23 @@ const TenantHome = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {properties.map((property) => (
-              <PropertyCard key={property.id} property={property} />
+              <PropertyCard 
+                key={property.id} 
+                image={property.image}
+                title={property.title}
+                location={property.location}
+                price={property.price}
+                beds={property.beds}
+                baths={property.baths}
+                area={property.area}
+                type={property.type}
+              />
             ))}
           </div>
         </div>
       </section>
+
+      <TenantBottomNav />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import { Calendar, Home, Eye } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import TenantBottomNav from "@/components/TenantBottomNav";
 import rentoLogo from "@/assets/rento-logo-dark.svg";
 
 const TenantDashboard = () => {
@@ -35,8 +36,9 @@ const TenantDashboard = () => {
             <img src={rentoLogo} alt="Rento" className="h-8" />
             <h1 className="font-heading text-xl font-semibold text-foreground">Rento</h1>
           </div>
-          <nav className="flex gap-6 text-sm">
-            <a href="#" className="text-primary font-medium">Dashboard</a>
+          <nav className="hidden md:flex gap-6 text-sm">
+            <a href="/tenant/home" className="text-muted-foreground hover:text-primary">Home</a>
+            <a href="/tenant/dashboard" className="text-primary font-medium">Dashboard</a>
             <a href="/tenant/payments" className="text-muted-foreground hover:text-primary">Payments</a>
             <a href="/tenant/profile" className="text-muted-foreground hover:text-primary">Profile</a>
           </nav>
@@ -88,6 +90,8 @@ const TenantDashboard = () => {
           </div>
         </section>
       </main>
+
+      <TenantBottomNav />
     </div>
   );
 };

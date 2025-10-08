@@ -7,6 +7,9 @@ import Auth from "./pages/Auth";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import TenantHome from "./pages/tenant/Home";
+import TenantDashboard from "./pages/tenant/TenantDashboard";
+import TenantPayments from "./pages/tenant/TenantPayments";
+import TenantProfile from "./pages/tenant/TenantProfile";
 import BrokerHome from "./pages/broker/Home";
 import BrokerAddProperty from "./pages/broker/AddProperty";
 import BrokerPropertyDetailsForm from "./pages/broker/PropertyDetailsForm";
@@ -32,6 +35,9 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Auth />} />
           <Route path="/tenant/home" element={<TenantHome />} />
+          <Route path="/tenant/dashboard" element={<TenantDashboard />} />
+          <Route path="/tenant/payments" element={<TenantPayments />} />
+          <Route path="/tenant/profile" element={<TenantProfile />} />
           <Route path="/broker/home" element={<BrokerHome />} />
           <Route path="/broker/add-property" element={<BrokerAddProperty />} />
           <Route path="/broker/property-details" element={<BrokerPropertyDetailsForm />} />

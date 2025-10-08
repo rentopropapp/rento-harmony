@@ -1,5 +1,6 @@
 import { CreditCard, Calendar } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import TenantBottomNav from "@/components/TenantBottomNav";
 import rentoLogo from "@/assets/rento-logo-dark.svg";
 
 const TenantPayments = () => {
@@ -31,9 +32,10 @@ const TenantPayments = () => {
             <img src={rentoLogo} alt="Rento" className="h-8" />
             <h1 className="font-heading text-xl font-semibold text-foreground">Rento</h1>
           </div>
-          <nav className="flex gap-6 text-sm">
+          <nav className="hidden md:flex gap-6 text-sm">
+            <a href="/tenant/home" className="text-muted-foreground hover:text-primary">Home</a>
             <a href="/tenant/dashboard" className="text-muted-foreground hover:text-primary">Dashboard</a>
-            <a href="#" className="text-primary font-medium">Payments</a>
+            <a href="/tenant/payments" className="text-primary font-medium">Payments</a>
             <a href="/tenant/profile" className="text-muted-foreground hover:text-primary">Profile</a>
           </nav>
         </div>
@@ -60,6 +62,8 @@ const TenantPayments = () => {
           ))}
         </div>
       </main>
+
+      <TenantBottomNav />
     </div>
   );
 };
