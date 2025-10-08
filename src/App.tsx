@@ -14,6 +14,10 @@ import BrokerHome from "./pages/broker/Home";
 import BrokerAddProperty from "./pages/broker/AddProperty";
 import BrokerPropertyDetailsForm from "./pages/broker/PropertyDetailsForm";
 import BrokerAddImages from "./pages/broker/addimages";
+import BrokerListings from "./pages/broker/BrokerListings";
+import BrokerWallet from "./pages/broker/BrokerWallet";
+import BrokerLeads from "./pages/broker/BrokerLeads";
+import BrokerProfile from "./pages/broker/BrokerProfile";
 import ManagerHome from "./pages/manager/Home";
 import ManagerAddProperty from "./pages/manager/AddProperty";
 import ManagerPropertyDetailsForm from "./pages/manager/PropertyDetailsForm";
@@ -42,6 +46,10 @@ const App = () => (
           <Route path="/broker/add-property" element={<BrokerAddProperty />} />
           <Route path="/broker/property-details" element={<BrokerPropertyDetailsForm />} />
           <Route path="/broker/add-images" element={<BrokerAddImages />} />
+          <Route path="/broker/listings" element={<BrokerListings />} />
+          <Route path="/broker/wallet" element={<BrokerWallet />} />
+          <Route path="/broker/leads" element={<BrokerLeads />} />
+          <Route path="/broker/profile" element={<BrokerProfile />} />
           <Route path="/manager/home" element={<ManagerHome />} />
           <Route path="/manager/add-property" element={<ManagerAddProperty />} />
           <Route path="/manager/property-details" element={<ManagerPropertyDetailsForm />} />

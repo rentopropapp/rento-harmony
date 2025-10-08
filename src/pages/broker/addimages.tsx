@@ -46,7 +46,7 @@ const PropertyImagesUpload = () => {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log("Uploaded images:", data.images);
     // TODO: upload to server or next step
-    navigate("/manager/property-details");
+    navigate("/broker/listings");
   };
 
   return (
