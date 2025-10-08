@@ -1,4 +1,5 @@
-import { Mail, MessageCircle, Calendar } from "lucide-react";
+import { useState } from "react";
+import { Mail, MessageCircle, Calendar, Trash2, Plus } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +11,7 @@ const ManagerTenants = () => {
   const location = useLocation();
   const property = location.state?.property;
 
-  const tenants = [
+  const [tenants, setTenants] = useState([
     {
       id: 1,
       name: "John Kamau",
@@ -59,8 +60,9 @@ const ManagerTenants = () => {
       status: "paid",
       rent: "800,000",
     },
-  ];
+  ]);
 
+  // ===== Utility Functions =====
   const getStatusColor = (status: string) => {
     switch (status) {
       case "paid":
@@ -104,6 +106,18 @@ const ManagerTenants = () => {
     }
   };
 
+  // ===== Delete Tenant =====
+  const handleDeleteTenant = (id: number) => {
+    if (window.confirm("Are you sure you want to remove this tenant?")) {
+      setTenants((prev) => prev.filter((t) => t.id !== id));
+    }
+  };
+
+  // ===== Add Tenant Navigation =====
+  const handleAddTenant = () => {
+    navigate("/manager/add-tenant", { state: { property } });
+  };
+
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-8">
       <ManagerTopNav property={property} />
@@ -115,103 +129,129 @@ const ManagerTenants = () => {
             Tenant Management
           </h1>
           <p className="text-sm text-muted-foreground">
-            Manage and communicate with your tenants easily.
+            Manage, communicate, or remove tenants whose agreements have expired.
           </p>
         </div>
 
         {/* Tenants List */}
         <div className="grid gap-6">
-          {tenants.map((tenant) => (
-            <Card
-              key={tenant.id}
-              className="p-6 transition-all hover:border-primary/60 hover:shadow-sm"
-            >
-              <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                {/* Tenant Info */}
-                <div className="flex-1">
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                      <span className="font-semibold text-primary">
-                        {tenant.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </span>
+          {tenants.length > 0 ? (
+            tenants.map((tenant) => (
+              <Card
+                key={tenant.id}
+                className="p-6 transition-all hover:border-primary/60 hover:shadow-sm relative"
+              >
+                {/* Delete Button (Top Right Corner) */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleDeleteTenant(tenant.id)}
+                  className="absolute top-4 right-4 text-red-600 hover:bg-red-50"
+                  title="Delete Tenant"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+
+                <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                  {/* Tenant Info */}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-4 mb-3">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                        <span className="font-semibold text-primary">
+                          {tenant.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
+                        </span>
+                      </div>
+                      <div>
+                        <h2 className="font-heading text-lg font-semibold text-foreground">
+                          {tenant.name}
+                        </h2>
+                        <p className="text-sm text-muted-foreground">
+                          {tenant.property}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h2 className="font-heading text-lg font-semibold text-foreground">
-                        {tenant.name}
-                      </h2>
-                      <p className="text-sm text-muted-foreground">
-                        {tenant.property}
+
+                    <p className="text-sm text-muted-foreground mb-4">
+                      {tenant.bio}
+                    </p>
+
+                    <div className="flex flex-wrap gap-4 text-sm">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-muted-foreground">Last Paid:</span>
+                        <span className="font-medium text-foreground">
+                          {tenant.lastPaid}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-muted-foreground">Next Due:</span>
+                        <span className="font-medium text-foreground">
+                          {tenant.nextDue}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex flex-col items-end gap-3">
+                    <Badge
+                      variant="outline"
+                      className={`${getStatusColor(
+                        tenant.status
+                      )} border px-3 py-1 rounded-full`}
+                    >
+                      {getStatusText(tenant.status)}
+                    </Badge>
+
+                    <div className="text-right">
+                      <p className="text-sm text-muted-foreground">Monthly Rent</p>
+                      <p className="text-lg font-bold text-foreground">
+                        UGX {tenant.rent}
                       </p>
                     </div>
-                  </div>
 
-                  <p className="text-sm text-muted-foreground mb-4">
-                    {tenant.bio}
-                  </p>
-
-                  <div className="flex flex-wrap gap-4 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">Last Paid:</span>
-                      <span className="font-medium text-foreground">
-                        {tenant.lastPaid}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">Next Due:</span>
-                      <span className="font-medium text-foreground">
-                        {tenant.nextDue}
-                      </span>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleSendReminder(tenant, "email")}
+                      >
+                        <Mail className="mr-2 h-4 w-4" />
+                        Email
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleSendReminder(tenant, "whatsapp")}
+                      >
+                        <MessageCircle className="mr-2 h-4 w-4" />
+                        WhatsApp
+                      </Button>
                     </div>
                   </div>
                 </div>
-
-                {/* Actions */}
-                <div className="flex flex-col items-end gap-3">
-                  <Badge
-                    variant="outline"
-                    className={`${getStatusColor(
-                      tenant.status
-                    )} border px-3 py-1 rounded-full`}
-                  >
-                    {getStatusText(tenant.status)}
-                  </Badge>
-
-                  <div className="text-right">
-                    <p className="text-sm text-muted-foreground">Monthly Rent</p>
-                    <p className="text-lg font-bold text-foreground">
-                      UGX {tenant.rent}
-                    </p>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleSendReminder(tenant, "email")}
-                    >
-                      <Mail className="mr-2 h-4 w-4" />
-                      Email
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleSendReminder(tenant, "whatsapp")}
-                    >
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      WhatsApp
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            ))
+          ) : (
+            <p className="text-muted-foreground text-center py-10">
+              No tenants found. Add a new tenant below.
+            </p>
+          )}
         </div>
       </main>
+
+      {/* Floating Add Button */}
+      <Button
+        onClick={handleAddTenant}
+        className="fixed bottom-6 right-6 rounded-full h-14 w-14 bg-primary text-primary-foreground shadow-lg hover:bg-primary/90"
+        title="Add Tenant"
+      >
+        <Plus className="h-6 w-6" />
+      </Button>
 
       <ManagerBottomNav property={property} />
     </div>
