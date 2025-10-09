@@ -14,20 +14,6 @@ const ManagerExpenses = () => {
   const location = useLocation();
   const property = location.state?.property || "Selected Property";
 
-  const [expenses, setExpenses] = useState([
-    { id: 1, type: "Maintenance", details: "Fixed leaking pipe in Unit 2A", cost: "150000" },
-    ...
-  ]);
-  // If `property` is an object, use property.name or property.id
- const propertyName = typeof property === "string" ? property : property?.name || "Selected Property";
-
- const [expenses, setExpenses] = useState([
-    { id: 1, property: "Hillview Apartment", type: "Maintenance", details: "Fixed leaking pipe in Unit 2A", cost: "150000" },
-    { id: 2, property: "Hillview Apartment", type: "Utilities", details: "Water and electricity bill", cost: "350000" },
-    { id: 3, property: "Garden Cottage", type: "Repairs", details: "Repaired broken gate", cost: "250000" },
-    { id: 4, property: "Hillview Apartment", type: "Maintenance", details: "Garden cleaning and hedge trimming", cost: "120000" },
-  ]);
-
   // === Sample Data ===
   const [expenses, setExpenses] = useState([
     { id: 1, type: "Maintenance", details: "Fixed leaking pipe in Unit 2A", cost: "150000" },
@@ -273,4 +259,5 @@ const ManagerExpenses = () => {
 };
 
 export default ManagerExpenses;
+
 
