@@ -77,7 +77,7 @@ const PropertyDetailsForm = () => {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log("Property details submitted:", { ...data, propertyType });
     // TODO: Handle form submission (save to database)
-    navigate("/manager/home");
+    navigate("/broker/add-images");
   };
 
   return (
@@ -88,7 +88,7 @@ const PropertyDetailsForm = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate("/manager/add-property")}
+            onClick={() => navigate("/broker/add-property")}
             className="gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -331,7 +331,7 @@ const PropertyDetailsForm = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => navigate("/manager/add-property")}
+                    onClick={() => navigate("/broker/add-property")}
                     className="flex-1"
                   >
                     Cancel
