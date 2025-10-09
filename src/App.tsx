@@ -72,7 +72,6 @@ const App = () => (
           <Route path="/manager/profile" element={<ManagerProfile />} />
           <Route path="/manager/tenants" element={<ManagerTenants />} />
           <Route path="/manager/properties" element={<PropertyList />} />
-          <Route path="/manager/dashboard" element={<ManagerDashboard />} />
           <Route path="/manager/expenses" element={<ManagerExpenses />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
