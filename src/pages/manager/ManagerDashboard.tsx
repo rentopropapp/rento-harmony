@@ -70,7 +70,7 @@ const ManagerDashboard = () => {
   const actionButtons = [
     { label: "Property Expenses", icon: FileText, route: "/manager/expenses", state: { property } },
     { label: "Edit Property", icon: Edit, route: "/manager/edit-property", state: { property } },
-    { label: "Users & Roles", icon: UserCog, route: "#" },
+    { label: "Users & Roles", icon: UserCog, route: "/manager/users-roles", state: { property } },
     { label: "Tenant Management", icon: UserCheck, route: "/manager/tenants", state: { property } },
     { label: "Messages", icon: MessageSquare, route: "/manager/messages", state: { property } },
     { label: "Tenant Agreement", icon: ScrollText, route: "/tenant/agreement" },
