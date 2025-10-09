@@ -9,11 +9,12 @@ import {
   UserCog,
   UserCheck,
   ScrollText,
+  MessageSquare,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ManagerTopNav, ManagerBottomNav } from "@/components/ManagerNavigation";
+import { ManagerBottomNav } from "@/components/ManagerNavigation";
 import {
   LineChart,
   Line,
@@ -23,6 +24,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+import rentoLogo from "@/assets/rento-logo-dark.svg"; // ✅ Added logo import
 
 const ManagerDashboard = () => {
   const navigate = useNavigate();
@@ -64,11 +66,13 @@ const ManagerDashboard = () => {
     },
   ];
 
+  // === Action Buttons (with Messages button) ===
   const actionButtons = [
     { label: "Property Expenses", icon: FileText, route: "/manager/expenses", state: { property } },
     { label: "Edit Property", icon: Edit, route: "/manager/edit-property", state: { property } },
     { label: "Users & Roles", icon: UserCog, route: "#" },
     { label: "Tenant Management", icon: UserCheck, route: "/manager/tenants", state: { property } },
+    { label: "Messages", icon: MessageSquare, route: "/manager/messages", state: { property } },
     { label: "Tenant Agreement", icon: ScrollText, route: "/tenant/agreement" },
   ];
 
@@ -90,20 +94,32 @@ const ManagerDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-8">
-      <ManagerTopNav property={property} />
+      {/* === Top Navigation with Logo === */}
+      <header className="border-b bg-card shadow-sm">
+        <div className="container mx-auto flex items-center justify-between px-4 py-4">
+          {/* Left: Logo + App Name */}
+          <div className="flex items-center gap-2">
+            <img src={rentoLogo} alt="Rento Logo" className="h-8 w-auto" />
+            <h1 className="font-heading text-xl font-semibold text-foreground">Rento</h1>
+          </div>
 
-      {/* Main Content */}
+          {/* Right: Property Name */}
+          <div className="hidden md:flex items-center gap-2 text-muted-foreground">
+            <p className="text-sm">
+              Managing: <span className="font-medium text-foreground">{selectedProperty}</span>
+            </p>
+          </div>
+        </div>
+      </header>
+
+      {/* === Main Content === */}
       <div className="container mx-auto px-4 py-8">
         {/* Selected Property */}
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-foreground mb-2">
-            Property Dashboard
-          </h2>
+          <h2 className="text-2xl font-semibold text-foreground mb-2">Property Dashboard</h2>
           <p className="text-muted-foreground">
             Selected Property:{" "}
-            <span className="font-medium text-foreground">
-              {selectedProperty}
-            </span>
+            <span className="font-medium text-foreground">{selectedProperty}</span>
           </p>
         </div>
 
@@ -113,9 +129,7 @@ const ManagerDashboard = () => {
             <Card
               key={stat.title}
               className="p-6 cursor-pointer hover:shadow-lg transition-shadow animate-fade-in"
-              onClick={() =>
-                stat.route !== "#" && navigate(stat.route, { state: stat.state })
-              }
+              onClick={() => stat.route !== "#" && navigate(stat.route, { state: stat.state })}
             >
               <div className="flex items-center justify-between mb-4">
                 <div
@@ -124,9 +138,7 @@ const ManagerDashboard = () => {
                   <stat.icon className="w-6 h-6 text-white" />
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-foreground mb-1">
-                {stat.value}
-              </h3>
+              <h3 className="text-2xl font-bold text-foreground mb-1">{stat.value}</h3>
               <p className="text-muted-foreground text-sm">{stat.title}</p>
             </Card>
           ))}
@@ -134,21 +146,19 @@ const ManagerDashboard = () => {
 
         {/* Action Buttons */}
         <div className="mb-8">
-          <h3 className="text-xl font-semibold text-foreground mb-4">
-            Property Management
-          </h3>
+          <h3 className="text-xl font-semibold text-foreground mb-4">Property Management</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {actionButtons.map((button) => (
               <Button
                 key={button.label}
                 variant="outline"
-                className="h-auto py-4 flex items-center justify-start gap-3"
+                className="h-auto py-4 flex items-center justify-start gap-3 hover:border-primary/60"
                 onClick={() =>
                   button.route !== "#" && navigate(button.route, { state: button.state })
                 }
               >
-                <button.icon className="w-5 h-5" />
-                <span>{button.label}</span>
+                <button.icon className="w-5 h-5 text-primary" />
+                <span className="text-foreground">{button.label}</span>
               </Button>
             ))}
           </div>
@@ -156,15 +166,11 @@ const ManagerDashboard = () => {
 
         {/* Monthly Summary */}
         <Card className="p-6">
-          <h3 className="text-xl font-semibold text-foreground mb-4">
-            Monthly Summary
-          </h3>
+          <h3 className="text-xl font-semibold text-foreground mb-4">Monthly Summary</h3>
           <div className="space-y-3 mb-6">
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">Total Revenue</span>
-              <span className="font-semibold text-foreground">
-                UGX 15,000,000
-              </span>
+              <span className="font-semibold text-foreground">UGX 15,000,000</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">Property Expenses</span>
@@ -172,12 +178,8 @@ const ManagerDashboard = () => {
             </div>
             <div className="border-t border-border pt-3 mt-3">
               <div className="flex justify-between items-center">
-                <span className="font-semibold text-foreground">
-                  Net Earnings
-                </span>
-                <span className="font-bold text-success text-xl">
-                  UGX 12,400,000
-                </span>
+                <span className="font-semibold text-foreground">Net Earnings</span>
+                <span className="font-bold text-success text-xl">UGX 12,400,000</span>
               </div>
             </div>
           </div>
@@ -195,7 +197,10 @@ const ManagerDashboard = () => {
                     border: "1px solid #d1d5db",
                     borderRadius: "8px",
                   }}
-                  formatter={(value: number) => [`UGX ${value.toLocaleString()}`, "Expenses"]}
+                  formatter={(value: number) => [
+                    `UGX ${value.toLocaleString()}`,
+                    "Expenses",
+                  ]}
                 />
                 <Line
                   type="monotone"
