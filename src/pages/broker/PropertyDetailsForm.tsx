@@ -25,7 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ArrowLeft } from "lucide-react";
-import rentoLogo from "@/assets/rento-logo-light.svg";
+import rentoLogo from "@/assets/rento-logo-dark.svg";
 import { useState } from "react";
 
 const amenitiesList = [
@@ -41,9 +41,11 @@ const amenitiesList = [
   "Garden",
 ];
 
+// ✅ Updated schema to include propertyStatus (rent/sale)
 const formSchema = z.object({
   propertyName: z.string().min(2, "Property name must be at least 2 characters"),
   furnished: z.enum(["yes", "no"]),
+  propertyStatus: z.enum(["rent", "sale"], { required_error: "Please select property status" }),
   amenities: z.array(z.string()).min(1, "Select at least one amenity"),
   description: z.string().min(20, "Description must be at least 20 characters"),
   location: z.string().min(5, "Location must be at least 5 characters"),
@@ -64,6 +66,7 @@ const PropertyDetailsForm = () => {
     defaultValues: {
       propertyName: "",
       furnished: "no",
+      propertyStatus: "rent",
       amenities: [],
       description: "",
       location: "",
@@ -76,12 +79,12 @@ const PropertyDetailsForm = () => {
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log("Property details submitted:", { ...data, propertyType });
-    // TODO: Handle form submission (save to database)
     navigate("/broker/add-images");
   };
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Header */}
       <header className="border-b bg-card">
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
           <img src={rentoLogo} alt="Rento" className="h-8 w-auto" />
@@ -97,6 +100,7 @@ const PropertyDetailsForm = () => {
         </div>
       </header>
 
+      {/* Main Form */}
       <div className="container mx-auto px-4 py-8">
         <div className="mx-auto max-w-3xl">
           <h1 className="mb-2 font-heading text-2xl font-bold text-foreground">
@@ -118,6 +122,34 @@ const PropertyDetailsForm = () => {
                       <FormLabel>What is the property name?</FormLabel>
                       <FormControl>
                         <Input placeholder="e.g., Hillview Apartment" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Property Status (For Sale or Rent) */}
+                <FormField
+                  control={form.control}
+                  name="propertyStatus"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Is this property for Sale or Rent?</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          className="flex gap-6"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="rent" id="status-rent" />
+                            <Label htmlFor="status-rent">For Rent</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="sale" id="status-sale" />
+                            <Label htmlFor="status-sale">For Sale</Label>
+                          </div>
+                        </RadioGroup>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -174,15 +206,15 @@ const PropertyDetailsForm = () => {
                                   <FormControl>
                                     <Checkbox
                                       checked={field.value?.includes(amenity)}
-                                      onCheckedChange={(checked) => {
-                                        return checked
+                                      onCheckedChange={(checked) =>
+                                        checked
                                           ? field.onChange([...field.value, amenity])
                                           : field.onChange(
                                               field.value?.filter(
                                                 (value) => value !== amenity
                                               )
-                                            );
-                                      }}
+                                            )
+                                      }
                                     />
                                   </FormControl>
                                   <Label className="font-normal">{amenity}</Label>
@@ -270,11 +302,7 @@ const PropertyDetailsForm = () => {
                       <FormItem>
                         <FormLabel>How much is the viewing fee?</FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            placeholder="e.g., 50000"
-                            {...field}
-                          />
+                          <Input type="number" placeholder="e.g., 50000" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -316,17 +344,14 @@ const PropertyDetailsForm = () => {
                     <FormItem>
                       <FormLabel>How much is the rent?</FormLabel>
                       <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="e.g., 1500000"
-                          {...field}
-                        />
+                        <Input type="number" placeholder="e.g., 1500000" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
+                {/* Buttons */}
                 <div className="flex gap-3 pt-4">
                   <Button
                     type="button"
