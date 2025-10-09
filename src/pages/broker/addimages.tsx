@@ -57,7 +57,7 @@ const PropertyImagesUpload = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/broker/property-details")}
             className="gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -132,7 +132,7 @@ const PropertyImagesUpload = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate("/broker/property-details")}
                     className="flex-1"
                   >
                     Cancel
@@ -151,3 +151,4 @@ const PropertyImagesUpload = () => {
 };
 
 export default PropertyImagesUpload;
+
