@@ -37,6 +37,24 @@ const ManagerMessages = () => {
     console.log("📩 Message sent to:", recipients);
     console.log("Message content:", message);
 
+    // Persist notice for tenants to view in their Notices page
+    try {
+      const stored = localStorage.getItem("tenant_notices");
+      const existing: Array<{ id: number; title: string; message: string; date: string }> = stored
+        ? JSON.parse(stored)
+        : [];
+      const newNotice = {
+        id: (existing[0]?.id || 0) + 1, // simple incremental id
+        title: selectedRecipient === "all" ? "Announcement" : `Message to ${recipients.join(", ")}`,
+        message,
+        date: new Date().toISOString().slice(0, 10),
+      };
+      const updated = [newNotice, ...existing];
+      localStorage.setItem("tenant_notices", JSON.stringify(updated));
+    } catch (e) {
+      console.error("Failed to persist tenant notice", e);
+    }
+
     alert(`Message sent to ${recipients.join(", ")}`);
     setMessage("");
   };
@@ -155,3 +173,4 @@ const ManagerMessages = () => {
 };
 
 export default ManagerMessages;
+
