@@ -1,6 +1,17 @@
-import { Building2, Star, Mail, Phone, MapPin, Calendar } from "lucide-react";
+import { useState } from "react";
+import {
+  Building2,
+  Star,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
+  LogOut,
+  UserSwitch,
+} from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ManagerTopNav, ManagerBottomNav } from "@/components/ManagerNavigation";
 
@@ -8,6 +19,7 @@ const ManagerProfile = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const property = location.state?.property;
+  const [isSwitchOpen, setIsSwitchOpen] = useState(false);
 
   const managerData = {
     name: "James Okello",
@@ -59,9 +71,23 @@ const ManagerProfile = () => {
             <h2 className="text-2xl font-semibold text-foreground mb-2">Manager Profile</h2>
             <p className="text-muted-foreground">Your professional information and statistics</p>
           </div>
-          <Button onClick={() => navigate("/manager/dashboard", { state: { property } })}>
-            Back to Dashboard
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={() => setIsSwitchOpen(true)}
+              className="gap-2"
+            >
+              <UserSwitch className="w-4 h-4" />
+              Switch Account
+            </Button>
+            <Button
+              onClick={() => navigate("/manager/dashboard", { state: { property } })}
+              className="gap-2"
+            >
+              <LogOut className="w-4 h-4" />
+              Back to Dashboard
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -166,6 +192,36 @@ const ManagerProfile = () => {
           </Card>
         </div>
       </div>
+
+      {/* Switch Account Modal */}
+      <Dialog open={isSwitchOpen} onOpenChange={setIsSwitchOpen}>
+        <DialogContent className="max-w-sm p-6">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-heading text-foreground text-center mb-4">
+              Switch Account
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 text-center">
+            <p className="text-muted-foreground text-sm mb-4">
+              Choose an account type to continue:
+            </p>
+            <Button
+              className="w-full"
+              onClick={() => navigate("/auth", { state: { role: "tenant" } })}
+            >
+              Tenant Account
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => navigate("/auth", { state: { role: "broker" } })}
+            >
+              Broker Account
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <ManagerBottomNav property={property} />
     </div>
