@@ -182,17 +182,18 @@ const TenantHome = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {properties.map((property) => (
-              <PropertyCard 
-                key={property.id} 
-                image={property.image}
-                title={property.title}
-                location={property.location}
-                price={property.price}
-                beds={property.beds}
-                baths={property.baths}
-                area={property.area}
-                type={property.type}
-              />
+              <div key={property.id} onClick={() => navigate("/tenant/property-listings")} className="cursor-pointer">
+                <PropertyCard 
+                  image={property.image}
+                  title={property.title}
+                  location={property.location}
+                  price={property.price}
+                  beds={property.beds}
+                  baths={property.baths}
+                  area={property.area}
+                  type={property.type}
+                />
+              </div>
             ))}
           </div>
         </div>
