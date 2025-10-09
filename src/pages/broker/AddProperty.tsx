@@ -28,7 +28,7 @@ const AddProperty = () => {
 
   const handlePropertyTypeSelect = (typeId: string) => {
     const selectedType = propertyTypes.find((type) => type.id === typeId);
-    navigate("/manager/property-details", {
+    navigate("/broker/property-details", {
       state: { propertyType: selectedType?.name },
     });
   };
@@ -41,7 +41,7 @@ const AddProperty = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate("/manager/home")}
+            onClick={() => navigate("/broker/home")}
             className="gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
