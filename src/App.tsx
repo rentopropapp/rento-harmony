@@ -34,6 +34,7 @@ import ManagerProfile from "./pages/manager/ManagerProfile";
 import ManagerTenants from "./pages/manager/ManagerTenants";
 import PropertyList from "./pages/manager/propertylist";
 import ManagerExpenses from "@/pages/ManagerExpenses";
+import ManagerExpenses from "./pages/manager/ManagerExpenses";
 
 const queryClient = new QueryClient();
 
