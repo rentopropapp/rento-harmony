@@ -47,7 +47,8 @@ const ManagerDashboard = () => {
       value: "3",
       icon: AlertCircle,
       color: "bg-warning",
-      route: "#",
+      route: "/manager/complaints",
+      state: { property },
     },
     {
       title: "Bookings",
