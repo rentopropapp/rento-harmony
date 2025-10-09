@@ -8,7 +8,7 @@ const TenantDashboard = () => {
   const navigate = useNavigate();
 
   // Mock data
-  const monthsPaid = 3; // for example
+  const monthsPaid: number = 3; // for example
 
   return (
     <div className="min-h-screen bg-background relative">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import TenantBottomNav from "@/components/TenantBottomNav";
 import rentoLogo from "@/assets/rento-logo-dark.svg";
 
 const TenantHome = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
   // Mock property data
@@ -149,7 +151,7 @@ const TenantHome = () => {
                   className="pl-12 h-14 text-base"
                 />
               </div>
-              <Button className="h-14 px-8">Search</Button>
+              <Button className="h-14 px-8" onClick={() => navigate("/tenant/search-request")}>Search</Button>
             </div>
           </div>
         </div>
