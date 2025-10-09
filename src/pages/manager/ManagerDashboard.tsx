@@ -63,7 +63,8 @@ const ManagerDashboard = () => {
       value: "UGX 12.4M",
       icon: Wallet,
       color: "bg-primary",
-      route: "#",
+      route: "/manager/payments",
+      state: { property },
     },
   ];
 
