@@ -7,6 +7,7 @@ import rentoLogo from "@/assets/rento-logo-dark.svg";
 
 const TenantHome = () => {
   const navigate = useNavigate();
+  const [filter, setFilter] = useState<"all" | "rent" | "sale" | "airbnb">("all");
 
   // Mock property data
   const properties = [
@@ -77,6 +78,12 @@ const TenantHome = () => {
       type: "rent" as const,
     },
   ];
+
+  // Filter logic
+  const filteredProperties =
+    filter === "all"
+      ? properties
+      : properties.filter((p) => p.type === filter);
 
   return (
     <div className="min-h-screen bg-background">
@@ -154,41 +161,66 @@ const TenantHome = () => {
             <h3 className="font-heading text-2xl font-semibold text-foreground">
               Featured Properties
             </h3>
+
+            {/* Filter Buttons */}
             <div className="flex gap-2">
-              <Button variant="outline" size="sm">
+              <Button
+                variant={filter === "all" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFilter("all")}
+              >
                 All
               </Button>
-              <Button variant="ghost" size="sm">
+              <Button
+                variant={filter === "rent" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setFilter("rent")}
+              >
                 Rent
               </Button>
-              <Button variant="ghost" size="sm">
+              <Button
+                variant={filter === "sale" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setFilter("sale")}
+              >
                 Sale
               </Button>
-              <Button variant="ghost" size="sm">
+              <Button
+                variant={filter === "airbnb" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setFilter("airbnb")}
+              >
                 Airbnb
               </Button>
             </div>
           </div>
 
+          {/* Property Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {properties.map((property) => (
-              <div
-                key={property.id}
-                onClick={() => navigate("/tenant/property-listings")}
-                className="cursor-pointer"
-              >
-                <PropertyCard
-                  image={property.image}
-                  title={property.title}
-                  location={property.location}
-                  price={property.price}
-                  beds={property.beds}
-                  baths={property.baths}
-                  area={property.area}
-                  type={property.type}
-                />
-              </div>
-            ))}
+            {filteredProperties.length > 0 ? (
+              filteredProperties.map((property) => (
+                <div
+                  key={property.id}
+                  onClick={() => navigate("/tenant/property-listings")}
+                  className="cursor-pointer"
+                >
+                  <PropertyCard
+                    image={property.image}
+                    title={property.title}
+                    location={property.location}
+                    price={property.price}
+                    beds={property.beds}
+                    baths={property.baths}
+                    area={property.area}
+                    type={property.type}
+                  />
+                </div>
+              ))
+            ) : (
+              <p className="text-muted-foreground col-span-full text-center py-10">
+                No properties available in this category.
+              </p>
+            )}
           </div>
         </div>
       </section>
