@@ -34,6 +34,7 @@ import ManagerProfile from "./pages/manager/ManagerProfile";
 import ManagerTenants from "./pages/manager/ManagerTenants";
 import PropertyList from "./pages/manager/propertylist";
 import ManagerExpenses from "@/pages/ManagerExpenses";
+import ManagerExpenses from "./pages/manager/ManagerExpenses";
 
 const queryClient = new QueryClient();
 
@@ -69,6 +70,7 @@ const App = () => (
           <Route path="/manager/add-images" element={<ManagerAddImages />} />
           <Route path="/manager/bookings" element={<ManagerBookings />} />
           <Route path="/manager/dashboard" element={<ManagerDashboard />} />
+          <Route path="/manager/expenses" element={<ManagerExpenses />} />
           <Route path="/manager/profile" element={<ManagerProfile />} />
           <Route path="/manager/tenants" element={<ManagerTenants />} />
           <Route path="/manager/properties" element={<PropertyList />} />
