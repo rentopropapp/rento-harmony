@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import {
   ManagerTopNav,
@@ -55,6 +56,22 @@ const ManagerComplaints = () => {
     },
   ]);
 
+  
+  // Merge incoming complaint from navigation state (e.g., Tenant submission)
+  useEffect(() => {
+    const incoming = location.state?.newComplaint as
+      | (Omit<Complaint, "id"> & Partial<Pick<Complaint, "id">>)
+      | undefined;
+    if (incoming) {
+      setComplaints((prev) => {
+        const nextId = (prev[prev.length - 1]?.id || 0) + 1;
+        return [...prev, { id: nextId, ...incoming } as Complaint];
+      });
+      // clear the state to avoid duplicate inserts on back/forward navigation
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
+  
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [replyMessage, setReplyMessage] = useState("");
 
@@ -232,3 +249,4 @@ const ManagerComplaints = () => {
 };
 
 export default ManagerComplaints;
+
