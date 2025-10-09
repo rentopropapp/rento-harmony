@@ -34,6 +34,7 @@ import ManagerProfile from "./pages/manager/ManagerProfile";
 import ManagerTenants from "./pages/manager/ManagerTenants";
 import PropertyList from "./pages/manager/propertylist";
 import ManagerExpenses from "./pages/manager/ManagerExpenses";
+import ManagerMessages from "./pages/manager/managermessages";
 
 const queryClient = new QueryClient();
 
@@ -73,6 +74,7 @@ const App = () => (
           <Route path="/manager/profile" element={<ManagerProfile />} />
           <Route path="/manager/tenants" element={<ManagerTenants />} />
           <Route path="/manager/properties" element={<PropertyList />} />
+          <Route path="/manager/messages" element={<ManagerMessages />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
