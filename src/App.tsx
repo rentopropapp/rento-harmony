@@ -35,6 +35,8 @@ import ManagerTenants from "./pages/manager/ManagerTenants";
 import PropertyList from "./pages/manager/propertylist";
 import ManagerExpenses from "./pages/manager/ManagerExpenses";
 import ManagerMessages from "./pages/manager/managermessages";
+import ManagerEditProperty from "./pages/manager/pmEditProperty";
+import ManagerTenantAgreement from "./pages/manager/TenantAgreement";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +72,8 @@ const App = () => (
           <Route path="/manager/add-images" element={<ManagerAddImages />} />
           <Route path="/manager/bookings" element={<ManagerBookings />} />
           <Route path="/manager/dashboard" element={<ManagerDashboard />} />
+          <Route path="/manager/edit-property" element={<ManagerEditProperty />} />
+          <Route path="/manager/tenant-agreement" element={<ManagerTenantAgreement />} />
           <Route path="/manager/messages" element={<ManagerMessages />} />
           <Route path="/manager/expenses" element={<ManagerExpenses />} />
           <Route path="/manager/profile" element={<ManagerProfile />} />
