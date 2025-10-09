@@ -2,13 +2,14 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Megaphone, ArrowLeft, CalendarDays } from "lucide-react";
 import rentoLogo from "@/assets/rento-logo-dark.svg";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const TenantNotices = () => {
   const navigate = useNavigate();
 
   // Mock data for property manager notices
-  const notices = [
+  const defaultNotices = [
     {
       id: 1,
       title: "Scheduled Maintenance",
@@ -32,6 +33,22 @@ const TenantNotices = () => {
     },
   ];
 
+  const [notices, setNotices] = useState(defaultNotices as Array<{ id: number; title: string; message: string; date: string }>);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("tenant_notices");
+      if (stored) {
+        const parsed = JSON.parse(stored) as Array<{ id: number; title: string; message: string; date: string }>;
+        // Merge stored notices before defaults, avoiding duplicates by id
+        const merged = [...parsed, ...defaultNotices.filter(d => !parsed.some(p => p.id === d.id))];
+        setNotices(merged);
+      }
+    } catch (e) {
+      console.error("Failed to read tenant notices", e);
+    }
+  }, []);
+  
   return (
     <div className="min-h-screen bg-background relative">
       {/* Header */}
@@ -88,3 +105,4 @@ const TenantNotices = () => {
 };
 
 export default TenantNotices;
+
