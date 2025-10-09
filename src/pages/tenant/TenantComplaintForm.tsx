@@ -24,8 +24,15 @@ const TenantComplaintForm = () => {
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log("Complaint submitted:", data);
-    navigate(-1); // go back to previous page after submission
+    const complaintPayload = {
+      tenantName: "Current Tenant",
+      topic: data.topic,
+      urgency: data.urgency.toLowerCase() as "low" | "medium" | "high",
+      details: data.details,
+      date: new Date().toISOString().slice(0, 10),
+      status: "open" as const,
+    };
+    navigate("/manager/complaints", { state: { newComplaint: complaintPayload } });
   };
 
   return (
@@ -130,3 +137,4 @@ const TenantComplaintForm = () => {
 };
 
 export default TenantComplaintForm;
+
