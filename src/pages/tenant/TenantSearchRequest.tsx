@@ -8,8 +8,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Search } from "lucide-react";
 import rentoLogo from "@/assets/rento-logo-dark.svg";
+import { supabase } from "@/lib/supabase";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
+  tenantName: z.string().min(1, "Please enter your name"),
+  tenantEmail: z.string().email("Please enter a valid email"),
+  tenantPhone: z.string().optional(),
   propertyType: z.string().min(1, "Please select a property type"),
   priceRange: z.string().min(1, "Enter your desired price range"),
   size: z.string().min(1, "Enter property size"),
@@ -19,9 +25,14 @@ const formSchema = z.object({
 
 const TenantSearchRequest = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      tenantName: "",
+      tenantEmail: "",
+      tenantPhone: "",
       propertyType: "",
       priceRange: "",
       size: "",
@@ -30,9 +41,39 @@ const TenantSearchRequest = () => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log("Search Request:", data);
-    navigate(-1); // Go back after submission
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase.from('leads').insert({
+        tenant_name: data.tenantName,
+        tenant_email: data.tenantEmail,
+        tenant_phone: data.tenantPhone || null,
+        property_type: data.propertyType,
+        price_range: data.priceRange,
+        size: data.size,
+        rooms: data.rooms,
+        location: data.location,
+        status: 'new',
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success!",
+        description: "Your search request has been submitted. Brokers will contact you soon.",
+      });
+
+      navigate(-1);
+    } catch (error) {
+      console.error('Error submitting lead:', error);
+      toast({
+        title: "Error",
+        description: "Failed to submit your request. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -53,6 +94,54 @@ const TenantSearchRequest = () => {
       <main className="container mx-auto px-4 py-10 max-w-lg">
         <Card className="p-6 border-border">
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* Tenant Name */}
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">
+                Your Name
+              </label>
+              <Input
+                placeholder="Enter your full name"
+                {...form.register("tenantName")}
+                className="h-12"
+              />
+              {form.formState.errors.tenantName && (
+                <p className="text-sm text-red-500 mt-1">
+                  {form.formState.errors.tenantName.message}
+                </p>
+              )}
+            </div>
+
+            {/* Tenant Email */}
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">
+                Email Address
+              </label>
+              <Input
+                type="email"
+                placeholder="your.email@example.com"
+                {...form.register("tenantEmail")}
+                className="h-12"
+              />
+              {form.formState.errors.tenantEmail && (
+                <p className="text-sm text-red-500 mt-1">
+                  {form.formState.errors.tenantEmail.message}
+                </p>
+              )}
+            </div>
+
+            {/* Tenant Phone */}
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">
+                Phone Number (Optional)
+              </label>
+              <Input
+                type="tel"
+                placeholder="+256 700 000 000"
+                {...form.register("tenantPhone")}
+                className="h-12"
+              />
+            </div>
+
             {/* Type of Property */}
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">
@@ -150,10 +239,11 @@ const TenantSearchRequest = () => {
             {/* Submit Button */}
             <Button
               type="submit"
+              disabled={isSubmitting}
               className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90"
             >
               <Search className="h-5 w-5 mr-2" />
-              Submit Search
+              {isSubmitting ? "Submitting..." : "Submit Search"}
             </Button>
           </form>
         </Card>
