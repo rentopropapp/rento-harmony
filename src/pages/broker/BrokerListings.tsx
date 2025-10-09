@@ -2,8 +2,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import rentoLogo from "@/assets/rento-logo-dark.svg";
 import BrokerBottomNav from "@/components/BrokerBottomNav";
+import { useNavigate } from "react-router-dom";
 
 const BrokerListings = () => {
+  const navigate = useNavigate();
   const properties = [
     {
       id: 1,
@@ -52,7 +54,7 @@ const BrokerListings = () => {
                 <p className="text-sm"><strong>Price:</strong> UGX {p.price}</p>
                 <div className="flex justify-between items-center mt-3">
                   <span className="text-xs text-muted-foreground">{p.status}</span>
-                  <Button variant="outline" size="sm">Edit</Button>
+                  <Button variant="outline" size="sm" onClick={() => navigate("/broker/edit-property")}>Edit</Button>
                 </div>
               </div>
             </Card>
