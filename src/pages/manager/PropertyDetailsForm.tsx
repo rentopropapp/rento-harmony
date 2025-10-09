@@ -25,9 +25,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ArrowLeft } from "lucide-react";
-import rentoLogo from "@/assets/rento-logo-light.svg";
+import rentoLogo from "@/assets/rento-logo-dark.svg";
 import { useState } from "react";
 
+// === Amenities List ===
 const amenitiesList = [
   "WiFi",
   "Parking",
@@ -41,8 +42,10 @@ const amenitiesList = [
   "Garden",
 ];
 
+// === Form Schema ===
 const formSchema = z.object({
   propertyName: z.string().min(2, "Property name must be at least 2 characters"),
+  propertyPurpose: z.enum(["rent", "sale", "airbnb"]),
   furnished: z.enum(["yes", "no"]),
   amenities: z.array(z.string()).min(1, "Select at least one amenity"),
   description: z.string().min(20, "Description must be at least 20 characters"),
@@ -51,6 +54,7 @@ const formSchema = z.object({
   viewingFee: z.string().optional(),
   leaseType: z.string().min(1, "Please select a lease type"),
   rent: z.string().min(1, "Rent amount is required"),
+  units: z.string().min(1, "Number of units is required"),
 });
 
 const PropertyDetailsForm = () => {
@@ -63,6 +67,7 @@ const PropertyDetailsForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       propertyName: "",
+      propertyPurpose: "rent",
       furnished: "no",
       amenities: [],
       description: "",
@@ -71,12 +76,15 @@ const PropertyDetailsForm = () => {
       viewingFee: "",
       leaseType: "",
       rent: "",
+      units: "",
     },
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log("Property details submitted:", { ...data, propertyType });
-    navigate("/manager/add-images", { state: { propertyDetails: { ...data, propertyType } } });
+    navigate("/manager/add-images", {
+      state: { propertyDetails: { ...data, propertyType } },
+    });
   };
 
   return (
@@ -123,13 +131,45 @@ const PropertyDetailsForm = () => {
                   )}
                 />
 
+                {/* Property Purpose (Rent, Sale, Airbnb) */}
+                <FormField
+                  control={form.control}
+                  name="propertyPurpose"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Is this property for Rent, Sale, or Airbnb?</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          className="flex gap-6"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="rent" id="purpose-rent" />
+                            <Label htmlFor="purpose-rent">Rent</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="sale" id="purpose-sale" />
+                            <Label htmlFor="purpose-sale">Sale</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="airbnb" id="purpose-airbnb" />
+                            <Label htmlFor="purpose-airbnb">Airbnb</Label>
+                          </div>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 {/* Furnished */}
                 <FormField
                   control={form.control}
                   name="furnished"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Is the property Furnished?</FormLabel>
+                      <FormLabel>Is the property furnished?</FormLabel>
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
@@ -151,43 +191,53 @@ const PropertyDetailsForm = () => {
                   )}
                 />
 
+                {/* Number of Units */}
+                <FormField
+                  control={form.control}
+                  name="units"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>How many units are available?</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="e.g., 8" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 {/* Amenities */}
                 <FormField
                   control={form.control}
                   name="amenities"
                   render={() => (
                     <FormItem>
-                      <FormLabel>What Amenities/Facilities are available?</FormLabel>
+                      <FormLabel>What amenities/facilities are available?</FormLabel>
                       <div className="grid grid-cols-2 gap-3">
                         {amenitiesList.map((amenity) => (
                           <FormField
                             key={amenity}
                             control={form.control}
                             name="amenities"
-                            render={({ field }) => {
-                              return (
-                                <FormItem
-                                  key={amenity}
-                                  className="flex items-center space-x-2 space-y-0"
-                                >
-                                  <FormControl>
-                                    <Checkbox
-                                      checked={field.value?.includes(amenity)}
-                                      onCheckedChange={(checked) => {
-                                        return checked
-                                          ? field.onChange([...field.value, amenity])
-                                          : field.onChange(
-                                              field.value?.filter(
-                                                (value) => value !== amenity
-                                              )
-                                            );
-                                      }}
-                                    />
-                                  </FormControl>
-                                  <Label className="font-normal">{amenity}</Label>
-                                </FormItem>
-                              );
-                            }}
+                            render={({ field }) => (
+                              <FormItem className="flex items-center space-x-2 space-y-0">
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value?.includes(amenity)}
+                                    onCheckedChange={(checked) =>
+                                      checked
+                                        ? field.onChange([...field.value, amenity])
+                                        : field.onChange(
+                                            field.value?.filter(
+                                              (value) => value !== amenity
+                                            )
+                                          )
+                                    }
+                                  />
+                                </FormControl>
+                                <Label className="font-normal">{amenity}</Label>
+                              </FormItem>
+                            )}
                           />
                         ))}
                       </div>
@@ -202,7 +252,7 @@ const PropertyDetailsForm = () => {
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Give a brief Property Description</FormLabel>
+                      <FormLabel>Give a brief property description</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Describe the property, its features, and what makes it special..."
@@ -221,7 +271,7 @@ const PropertyDetailsForm = () => {
                   name="location"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>What is the Location of the property?</FormLabel>
+                      <FormLabel>What is the location of the property?</FormLabel>
                       <FormControl>
                         <Input placeholder="e.g., 123 Main Street, Kampala" {...field} />
                       </FormControl>
@@ -315,11 +365,7 @@ const PropertyDetailsForm = () => {
                     <FormItem>
                       <FormLabel>How much is the rent?</FormLabel>
                       <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="e.g., 1500000"
-                          {...field}
-                        />
+                        <Input type="number" placeholder="e.g., 1500000" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
