@@ -188,14 +188,14 @@ const TenantProfile = () => {
             </p>
             <Button
               className="w-full"
-              onClick={() => navigate("/", { state: { role: "manager" } })}
+              onClick={() => navigate("/auth", { state: { role: "manager" } })}
             >
               Property Manager Account
             </Button>
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => navigate("/", { state: { role: "broker" } })}
+              onClick={() => navigate("/auth", { state: { role: "broker" } })}
             >
               Broker Account
             </Button>
@@ -209,4 +209,3 @@ const TenantProfile = () => {
 };
 
 export default TenantProfile;
-
