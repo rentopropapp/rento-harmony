@@ -69,7 +69,7 @@ const ManagerExpenses = () => {
     doc.text("Rento Property Expense Report", 110, 60);
     doc.setFontSize(12);
     doc.setTextColor("#000");
-    doc.text(`Property: ${property}`, 40, 100);
+    doc.text(`Property: ${typeof property === 'string' ? property : property?.name || 'Selected Property'}`, 40, 100);
     doc.text(`Category Filter: ${filter}`, 40, 115);
 
     // Table header
@@ -121,7 +121,9 @@ const ManagerExpenses = () => {
               Property Expenses
             </h1>
           </div>
-          <p className="text-sm text-muted-foreground">{property}</p>
+          <p className="text-sm text-muted-foreground">
+            {typeof property === 'string' ? property : property?.name || 'Selected Property'}
+          </p>
         </div>
       </header>
 
