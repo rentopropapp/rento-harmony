@@ -1,4 +1,4 @@
-import { Star, Camera, UserSwitch } from "lucide-react";
+import { Star, Camera, Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -64,7 +64,7 @@ const TenantProfile = () => {
               onClick={() => setIsSwitchOpen(true)}
               className="gap-2"
             >
-              <UserSwitch className="h-4 w-4" />
+              <Users className="h-4 w-4" />
               Switch Account
             </Button>
           </div>

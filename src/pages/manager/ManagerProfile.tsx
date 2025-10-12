@@ -7,7 +7,7 @@ import {
   MapPin,
   Calendar,
   LogOut,
-  UserSwitch,
+  Users,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -77,7 +77,7 @@ const ManagerProfile = () => {
               onClick={() => setIsSwitchOpen(true)}
               className="gap-2"
             >
-              <UserSwitch className="w-4 h-4" />
+              <Users className="w-4 h-4" />
               Switch Account
             </Button>
             <Button

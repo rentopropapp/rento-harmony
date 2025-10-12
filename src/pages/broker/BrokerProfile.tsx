@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Star, Camera, UserSwitch } from "lucide-react";
+import { Star, Camera, Users } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import rentoLogo from "@/assets/rento-logo-dark.svg";
 import BrokerBottomNav from "@/components/BrokerBottomNav";
@@ -64,7 +64,7 @@ const BrokerProfile = () => {
               onClick={() => setIsSwitchOpen(true)}
               className="gap-2"
             >
-              <UserSwitch className="h-4 w-4" />
+              <Users className="h-4 w-4" />
               Switch Account
             </Button>
           </div>
