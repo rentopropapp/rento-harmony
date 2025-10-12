@@ -75,7 +75,7 @@ const ManagerDashboard = () => {
     { label: "Users & Roles", icon: UserCog, route: "/manager/users-roles", state: { property } },
     { label: "Tenant Management", icon: UserCheck, route: "/manager/tenants", state: { property } },
     { label: "Messages", icon: MessageSquare, route: "/manager/messages", state: { property } },
-    { label: "Tenant Agreement", icon: ScrollText, route: "/tenant/agreement" },
+    { label: "Tenant Agreement", icon: ScrollText, route: "/manager/tenant-agreement", state: { property } },
   ];
 
   // === Monthly Data for Chart ===
