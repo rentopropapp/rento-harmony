@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ManagerTopNav, ManagerBottomNav } from "@/components/ManagerNavigation";
+import rentoLogo from "@/assets/rento-logo-dark.svg";
 
 const ManagerProfile = () => {
   const navigate = useNavigate();
@@ -67,9 +68,12 @@ const ManagerProfile = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="text-2xl font-semibold text-foreground mb-2">Manager Profile</h2>
-            <p className="text-muted-foreground">Your professional information and statistics</p>
+          <div className="flex items-center gap-4">
+            <img src={rentoLogo} alt="Rento" className="h-8 w-auto" />
+            <div>
+              <h2 className="text-2xl font-semibold text-foreground mb-2">Manager Profile</h2>
+              <p className="text-muted-foreground">Your professional information and statistics</p>
+            </div>
           </div>
           <div className="flex gap-3">
             <Button

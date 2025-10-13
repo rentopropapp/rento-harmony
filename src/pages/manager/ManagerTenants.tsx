@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ManagerTopNav, ManagerBottomNav } from "@/components/ManagerNavigation";
+import rentoLogo from "@/assets/rento-logo-dark.svg";
 
 const ManagerTenants = () => {
   const navigate = useNavigate();
@@ -130,13 +131,16 @@ const ManagerTenants = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="font-heading text-2xl font-bold text-foreground">
-            Tenant Management
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Manage, communicate, or remove tenants whose agreements have expired.
-          </p>
+        <div className="mb-8 flex items-center gap-4">
+          <img src={rentoLogo} alt="Rento" className="h-8 w-auto" />
+          <div>
+            <h1 className="font-heading text-2xl font-bold text-foreground">
+              Tenant Management
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Manage, communicate, or remove tenants whose agreements have expired.
+            </p>
+          </div>
         </div>
 
         {/* Tenants List */}

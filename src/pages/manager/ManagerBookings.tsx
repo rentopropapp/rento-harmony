@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ManagerTopNav, ManagerBottomNav } from "@/components/ManagerNavigation";
+import rentoLogo from "@/assets/rento-logo-dark.svg";
 
 const ManagerBookings = () => {
   const navigate = useNavigate();
@@ -88,9 +89,12 @@ const ManagerBookings = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="text-2xl font-semibold text-foreground mb-2">Property Viewings</h2>
-            <p className="text-muted-foreground">Upcoming property viewing appointments</p>
+          <div className="flex items-center gap-4">
+            <img src={rentoLogo} alt="Rento" className="h-8 w-auto" />
+            <div>
+              <h2 className="text-2xl font-semibold text-foreground mb-2">Property Viewings</h2>
+              <p className="text-muted-foreground">Upcoming property viewing appointments</p>
+            </div>
           </div>
           <Button onClick={() => navigate("/manager/dashboard", { state: { property } })}>
             Back to Dashboard
