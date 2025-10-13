@@ -3,12 +3,13 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useLocation } from "react-router-dom";
-import { Send, Users, User } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Send, Users, User, ArrowLeft } from "lucide-react";
 import { ManagerBottomNav } from "@/components/ManagerNavigation";
 import rentoLogo from "@/assets/rento-logo-dark.svg";
 
 const ManagerMessages = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const property = location.state?.property;
 
@@ -64,7 +65,15 @@ const ManagerMessages = () => {
       {/* Header */}
       <header className="border-b bg-card shadow-sm">
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate("/manager/dashboard", { state: { property } })}
+              className="rounded-full"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
             <img src={rentoLogo} alt="Rento" className="h-8 w-auto" />
             <h1 className="font-heading text-xl font-semibold text-foreground">Rento</h1>
           </div>
