@@ -314,6 +314,48 @@ const Auth = () => {
 
             {/* 🔐 Login Tab */}
             <TabsContent value="login" className="space-y-6">
+              {/* User Type Selection */}
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-foreground">
+                  Login as
+                </label>
+                <div className="grid grid-cols-3 gap-3">
+                  <button
+                    onClick={() => setUserType("tenant")}
+                    className={`p-4 rounded-xl border-2 transition-all ${
+                      userType === "tenant"
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <Home className="w-6 h-6 mx-auto mb-2 text-primary" />
+                    <p className="text-xs font-medium">Tenant</p>
+                  </button>
+                  <button
+                    onClick={() => setUserType("manager")}
+                    className={`p-4 rounded-xl border-2 transition-all ${
+                      userType === "manager"
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <Building2 className="w-6 h-6 mx-auto mb-2 text-primary" />
+                    <p className="text-xs font-medium">Manager</p>
+                  </button>
+                  <button
+                    onClick={() => setUserType("broker")}
+                    className={`p-4 rounded-xl border-2 transition-all ${
+                      userType === "broker"
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <Users className="w-6 h-6 mx-auto mb-2 text-primary" />
+                    <p className="text-xs font-medium">Broker</p>
+                  </button>
+                </div>
+              </div>
+
               <div className="space-y-4">
                 <Input
                   type="email"
