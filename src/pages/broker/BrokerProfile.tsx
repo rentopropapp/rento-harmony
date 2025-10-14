@@ -183,14 +183,14 @@ const BrokerProfile = () => {
             </p>
             <Button
               className="w-full"
-              onClick={() => navigate("/auth", { state: { role: "manager" } })}
+              onClick={() => navigate("/", { state: { role: "manager" } })}
             >
               Property Manager Account
             </Button>
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => navigate("/auth", { state: { role: "tenant" } })}
+              onClick={() => navigate("/", { state: { role: "tenant" } })}
             >
               Tenant Account
             </Button>

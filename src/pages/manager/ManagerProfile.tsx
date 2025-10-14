@@ -212,14 +212,14 @@ const ManagerProfile = () => {
             </p>
             <Button
               className="w-full"
-              onClick={() => navigate("/auth", { state: { role: "tenant" } })}
+              onClick={() => navigate("/", { state: { role: "tenant" } })}
             >
               Tenant Account
             </Button>
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => navigate("/auth", { state: { role: "broker" } })}
+              onClick={() => navigate("/", { state: { role: "broker" } })}
             >
               Broker Account
             </Button>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,8 +11,11 @@ import rentoLogo from "@/assets/rento-logo-dark.svg";
 
 const Auth = () => {
   const navigate = useNavigate();
-  const [userType, setUserType] = useState<"tenant" | "manager" | "broker">("tenant");
+  const location = useLocation();
+  const switchRole = location.state?.role as "tenant" | "manager" | "broker" | undefined;
+  const [userType, setUserType] = useState<"tenant" | "manager" | "broker">(switchRole || "tenant");
   const [signupPhase, setSignupPhase] = useState(1);
+  const [activeTab, setActiveTab] = useState(switchRole ? "login" : "signup");
   
   // Phase 2 fields
   const [firstName, setFirstName] = useState("");
@@ -73,7 +76,7 @@ const Auth = () => {
 
         {/* Auth Card */}
         <div className="bg-card rounded-2xl shadow-lg p-8 animate-slide-up">
-          <Tabs defaultValue="signup" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
               <TabsTrigger value="login">Login</TabsTrigger>
