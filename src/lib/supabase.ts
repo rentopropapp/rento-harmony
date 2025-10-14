@@ -23,3 +23,21 @@ export type Lead = {
   created_at: string;
   updated_at: string;
 };
+
+export type LeadMessage = {
+  id: string;
+  lead_id: string;
+  sender_id: string | null;
+  sender_email: string | null;
+  content: string;
+  created_at: string;
+};
+
+export type ManagerTenantMessage = {
+  id: string;
+  sender_id: string;
+  tenant_id: string | null; // null means broadcast
+  title: string | null;
+  content: string;
+  created_at: string;
+};

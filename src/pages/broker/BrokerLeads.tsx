@@ -2,13 +2,18 @@ import { Card } from "@/components/ui/card";
 import { Mail, Phone, MapPin, Home, DollarSign, Users } from "lucide-react";
 import rentoLogo from "@/assets/rento-logo-dark.svg";
 import BrokerBottomNav from "@/components/BrokerBottomNav";
-import { supabase, type Lead } from "@/lib/supabase";
+import { supabase, type Lead, type LeadMessage } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const BrokerLeads = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
+  const [messages, setMessages] = useState<LeadMessage[]>([]);
+  const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
     fetchLeads();
@@ -27,6 +32,37 @@ const BrokerLeads = () => {
       console.error('Error fetching leads:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const openMessages = async (leadId: string) => {
+    setSelectedLeadId(leadId);
+    setMessages([]);
+    const { data, error } = await supabase
+      .from('lead_messages')
+      .select('*')
+      .eq('lead_id', leadId)
+      .order('created_at', { ascending: true });
+    if (!error && data) setMessages(data as LeadMessage[]);
+  };
+
+  const sendMessage = async () => {
+    if (!selectedLeadId || !newMessage.trim()) return;
+    const { data: sessionData } = await supabase.auth.getSession();
+    const user = sessionData?.session?.user;
+    const { data, error } = await supabase
+      .from('lead_messages')
+      .insert({
+        lead_id: selectedLeadId,
+        sender_id: user?.id ?? null,
+        sender_email: user?.email ?? null,
+        content: newMessage.trim(),
+      })
+      .select('*')
+      .single();
+    if (!error && data) {
+      setMessages((prev) => [...prev, data as LeadMessage]);
+      setNewMessage("");
     }
   };
 
@@ -140,7 +176,41 @@ const BrokerLeads = () => {
                       <Phone className="h-4 w-4" /> Call
                     </button>
                   )}
+                  <button
+                    onClick={() => openMessages(lead.id)}
+                    className="text-primary text-sm flex items-center gap-2 hover:underline"
+                  >
+                    View Messages
+                  </button>
                 </div>
+
+                {selectedLeadId === lead.id && (
+                  <div className="mt-6 border-t pt-4">
+                    <h5 className="font-semibold mb-3">Messages</h5>
+                    <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
+                      {messages.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">No messages yet.</p>
+                      ) : (
+                        messages.map((m) => (
+                          <div key={m.id} className="text-sm">
+                            <div className="text-muted-foreground">
+                              {new Date(m.created_at).toLocaleString()} {m.sender_email ? `• ${m.sender_email}` : ''}
+                            </div>
+                            <div className="text-foreground">{m.content}</div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 mt-3">
+                      <Input
+                        placeholder="Type a message"
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                      />
+                      <Button size="sm" onClick={sendMessage}>Send</Button>
+                    </div>
+                  </div>
+                )}
               </Card>
             ))}
           </div>

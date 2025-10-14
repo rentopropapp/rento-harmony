@@ -4,49 +4,36 @@ import { Megaphone, ArrowLeft, CalendarDays } from "lucide-react";
 import rentoLogo from "@/assets/rento-logo-dark.svg";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase, type ManagerTenantMessage } from "@/lib/supabase";
 
 const TenantNotices = () => {
   const navigate = useNavigate();
 
-  // Mock data for property manager notices
-  const defaultNotices = [
-    {
-      id: 1,
-      title: "Scheduled Maintenance",
-      message:
-        "Please note that there will be general plumbing maintenance in the Hillview Apartments on October 10th from 9:00 AM to 2:00 PM. Kindly plan accordingly.",
-      date: "2024-10-07",
-    },
-    {
-      id: 2,
-      title: "Water Supply Interruption",
-      message:
-        "The city council has informed us of a temporary water supply cut scheduled for October 12th between 8:00 AM and 5:00 PM.",
-      date: "2024-10-06",
-    },
-    {
-      id: 3,
-      title: "Rent Payment Reminder",
-      message:
-        "This is a friendly reminder that your next rent payment for Hillview Apartment is due on November 1st. Please ensure payment is made before the due date to avoid penalties.",
-      date: "2024-10-05",
-    },
-  ];
-
-  const [notices, setNotices] = useState(defaultNotices as Array<{ id: number; title: string; message: string; date: string }>);
+  const [notices, setNotices] = useState<Array<{ id: string; title: string | null; message: string; date: string }>>([]);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("tenant_notices");
-      if (stored) {
-        const parsed = JSON.parse(stored) as Array<{ id: number; title: string; message: string; date: string }>;
-        // Merge stored notices before defaults, avoiding duplicates by id
-        const merged = [...parsed, ...defaultNotices.filter(d => !parsed.some(p => p.id === d.id))];
-        setNotices(merged);
+    const load = async () => {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const userId = sessionData?.session?.user?.id as string | undefined;
+      const query = supabase
+        .from('manager_tenant_messages')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(25);
+      const { data, error } = userId
+        ? await query.or(`tenant_id.eq.${userId},tenant_id.is.null`)
+        : await query.eq('tenant_id', '');
+      if (!error && data) {
+        const mapped = (data as ManagerTenantMessage[]).map((m) => ({
+          id: m.id,
+          title: m.title,
+          message: m.content,
+          date: new Date(m.created_at).toISOString().slice(0, 10),
+        }));
+        setNotices(mapped);
       }
-    } catch (e) {
-      console.error("Failed to read tenant notices", e);
-    }
+    };
+    load();
   }, []);
   
   return (
@@ -76,7 +63,7 @@ const TenantNotices = () => {
               </div>
               <div>
                 <h2 className="font-heading text-lg font-semibold text-foreground">
-                  {notice.title}
+                  {notice.title || 'Notice'}
                 </h2>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
                   <CalendarDays className="h-4 w-4" />

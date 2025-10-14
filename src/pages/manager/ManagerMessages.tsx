@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -7,6 +7,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Send, Users, User, ArrowLeft } from "lucide-react";
 import { ManagerBottomNav } from "@/components/ManagerNavigation";
 import rentoLogo from "@/assets/rento-logo-dark.svg";
+import { Input } from "@/components/ui/input";
+import { supabase, type ManagerTenantMessage } from "@/lib/supabase";
 
 const ManagerMessages = () => {
   const navigate = useNavigate();
@@ -15,49 +17,54 @@ const ManagerMessages = () => {
 
   const [selectedRecipient, setSelectedRecipient] = useState<string>("all");
   const [message, setMessage] = useState("");
+  const [title, setTitle] = useState("");
+  const [tenants, setTenants] = useState<Array<{ id: string; name: string }>>([]);
+  const [recent, setRecent] = useState<ManagerTenantMessage[]>([]);
 
-  // Dummy tenant list (could be fetched from backend)
-  const tenants = [
-    { id: 1, name: "John Kamau", property: "Hillview Apartment - Unit 2A" },
-    { id: 2, name: "Sarah Nakato", property: "Hillview Apartment - Unit 3B" },
-    { id: 3, name: "Michael Ouma", property: "Garden Cottage - Unit 1" },
-    { id: 4, name: "Grace Achieng", property: "Hillview Apartment - Unit 1A" },
-  ];
+  useEffect(() => {
+    const load = async () => {
+      const { data: tenantProfiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, role')
+        .eq('role', 'tenant');
+      setTenants((tenantProfiles || []).map((t: any) => ({ id: t.id as string, name: (t.full_name as string) || 'Tenant' })));
 
-  const handleSendMessage = () => {
+      const { data: msgs } = await supabase
+        .from('manager_tenant_messages')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(10);
+      setRecent((msgs as ManagerTenantMessage[]) || []);
+    };
+    load();
+  }, []);
+
+  const handleSendMessage = async () => {
     if (!message.trim()) {
       alert("Please enter a message before sending.");
       return;
     }
-
-    const recipients =
-      selectedRecipient === "all"
-        ? tenants.map((t) => t.name)
-        : tenants.filter((t) => t.id.toString() === selectedRecipient).map((t) => t.name);
-
-    console.log("📩 Message sent to:", recipients);
-    console.log("Message content:", message);
-
-    // Persist notice for tenants to view in their Notices page
-    try {
-      const stored = localStorage.getItem("tenant_notices");
-      const existing: Array<{ id: number; title: string; message: string; date: string }> = stored
-        ? JSON.parse(stored)
-        : [];
-      const newNotice = {
-        id: (existing[0]?.id || 0) + 1, // simple incremental id
-        title: selectedRecipient === "all" ? "Announcement" : `Message to ${recipients.join(", ")}`,
-        message,
-        date: new Date().toISOString().slice(0, 10),
-      };
-      const updated = [newNotice, ...existing];
-      localStorage.setItem("tenant_notices", JSON.stringify(updated));
-    } catch (e) {
-      console.error("Failed to persist tenant notice", e);
+    const { data: sessionData } = await supabase.auth.getSession();
+    const senderId = sessionData?.session?.user?.id as string | undefined;
+    if (!senderId) {
+      alert('You must be logged in to send messages.');
+      return;
     }
-
-    alert(`Message sent to ${recipients.join(", ")}`);
-    setMessage("");
+    const tenantId = selectedRecipient === 'all' ? null : selectedRecipient;
+    const { error } = await supabase.from('manager_tenant_messages').insert({
+      sender_id: senderId,
+      tenant_id: tenantId,
+      title: title || (tenantId ? 'Direct Message' : 'Announcement'),
+      content: message.trim(),
+    });
+    if (error) {
+      console.error(error);
+      alert('Failed to send message');
+      return;
+    }
+    alert('Message sent');
+    setMessage('');
+    setTitle('');
   };
 
   return (
@@ -115,7 +122,7 @@ const ManagerMessages = () => {
                   </div>
                 </SelectItem>
                 {tenants.map((tenant) => (
-                  <SelectItem key={tenant.id} value={tenant.id.toString()}>
+                  <SelectItem key={tenant.id} value={tenant.id}>
                     <div className="flex items-center gap-2">
                       <User className="w-4 h-4 text-muted-foreground" />
                       <span>{tenant.name}</span>
@@ -127,6 +134,10 @@ const ManagerMessages = () => {
           </div>
 
           {/* Message Input */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-foreground mb-2">Title (optional)</label>
+            <Input placeholder="e.g. Scheduled Maintenance" value={title} onChange={(e) => setTitle(e.target.value)} />
+          </div>
           <div className="mb-6">
             <label className="block text-sm font-medium text-foreground mb-2">
               Message Content
@@ -157,21 +168,16 @@ const ManagerMessages = () => {
             Recent Messages
           </h3>
           <div className="space-y-3">
-            <Card className="p-4 border-border">
-              <p className="text-sm text-muted-foreground">
-                <span className="font-medium text-foreground">Notice:</span> Power outage
-                scheduled for maintenance tomorrow from 10AM - 2PM.
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">Sent to: All Tenants</p>
-            </Card>
-
-            <Card className="p-4 border-border">
-              <p className="text-sm text-muted-foreground">
-                <span className="font-medium text-foreground">Reminder:</span> Rent for October
-                is due by the 5th.
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">Sent to: John Kamau</p>
-            </Card>
+            {recent.map((m) => (
+              <Card key={m.id} className="p-4 border-border">
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">{m.title || 'Notice'}:</span> {m.content}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Sent to: {m.tenant_id ? 'Tenant' : 'All Tenants'} • {new Date(m.created_at).toLocaleString()}
+                </p>
+              </Card>
+            ))}
           </div>
         </div>
       </main>
