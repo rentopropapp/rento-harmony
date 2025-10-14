@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { PropertyCard } from "@/components/PropertyCard";
 
 const TenantPropertyListings = () => {
   const navigate = useNavigate();
@@ -68,6 +69,54 @@ const TenantPropertyListings = () => {
       prev === 0 ? property.images.length - 1 : prev - 1
     );
   };
+
+  // Similar properties based on the current property's type
+  const similarProperties = [
+    {
+      id: 2,
+      image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop",
+      title: "Sunrise Apartments",
+      location: "Kololo, Kampala",
+      price: "750,000",
+      beds: 2,
+      baths: 2,
+      area: "1,000",
+      type: property.type,
+    },
+    {
+      id: 3,
+      image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop",
+      title: "Garden View Suites",
+      location: "Bugolobi, Kampala",
+      price: "900,000",
+      beds: 3,
+      baths: 2,
+      area: "1,400",
+      type: property.type,
+    },
+    {
+      id: 4,
+      image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
+      title: "Modern Living Spaces",
+      location: "Ntinda, Kampala",
+      price: "850,000",
+      beds: 3,
+      baths: 3,
+      area: "1,300",
+      type: property.type,
+    },
+    {
+      id: 5,
+      image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop",
+      title: "Luxury Heights",
+      location: "Nakasero, Kampala",
+      price: "1,200,000",
+      beds: 4,
+      baths: 3,
+      area: "1,800",
+      type: property.type,
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-background pb-8">
@@ -345,6 +394,34 @@ const TenantPropertyListings = () => {
                 Confirm Schedule
               </Button>
             </Card>
+          </div>
+        </div>
+
+        {/* Similar Properties Section */}
+        <div className="mt-12">
+          <div className="mb-6">
+            <h2 className="font-heading text-2xl font-bold text-foreground mb-2">
+              Similar Properties You Might Like
+            </h2>
+            <p className="text-muted-foreground">
+              Other {property.type.toLowerCase()}s in Kampala
+            </p>
+          </div>
+          
+          <div className="overflow-x-auto pb-4">
+            <div className="flex gap-4 min-w-max">
+              {similarProperties.map((prop) => (
+                <div key={prop.id} className="w-80 flex-shrink-0">
+                  <PropertyCard
+                    {...prop}
+                    onClick={() => {
+                      navigate('/tenant/property-listings', { state: { property: prop } });
+                      window.scrollTo(0, 0);
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </main>
