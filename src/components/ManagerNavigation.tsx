@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Home, Users, Calendar, User } from "lucide-react";
+import rentoLogo from "@/assets/rento-logo-dark.svg";
 
 interface ManagerNavigationProps {
   property?: {
@@ -24,10 +25,7 @@ export const ManagerTopNav = ({ property }: ManagerNavigationProps) => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-semibold text-lg">R</span>
-            </div>
-            <h1 className="text-2xl font-bold text-primary">Rento</h1>
+            <img src={rentoLogo} alt="Rento" className="h-8 w-auto" />
           </div>
           <nav className="flex space-x-6">
             <Button
