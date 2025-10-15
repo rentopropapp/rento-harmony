@@ -17,7 +17,7 @@ const Index = () => {
       {/* Header */}
       <header className="border-b bg-card">
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
-          <img src={rento-logo-dark.svg} alt="Rento" className="h-8 w-auto" />
+          <img src={rentoLogo} alt="Rento" className="h-8 w-auto" />
           <Button
             variant="ghost"
             size="sm"
