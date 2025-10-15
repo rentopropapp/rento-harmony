@@ -141,7 +141,40 @@ const Auth = () => {
       if (role !== userType) {
         throw new Error(`This account is a ${role}. Switch to the ${role} tab to login.`);
       }
-      navigateByRole(role);
+
+      // Conditional redirect: brokers/managers with listed properties go to listings
+      if (role === "broker") {
+        const { count: brokerListedCount, error: brokerCountErr } = await supabase
+          .from("properties")
+          .select("id", { count: "exact", head: true })
+          .eq("broker_id", user.id)
+          .eq("status", "listed");
+        if (brokerCountErr) throw brokerCountErr;
+        if ((brokerListedCount || 0) > 0) {
+          navigate("/broker/listings");
+        } else {
+          navigate("/broker/home");
+        }
+        return;
+      }
+
+      if (role === "manager") {
+        const { count: managerListedCount, error: managerCountErr } = await supabase
+          .from("properties")
+          .select("id", { count: "exact", head: true })
+          .eq("manager_id", user.id)
+          .eq("status", "listed");
+        if (managerCountErr) throw managerCountErr;
+        if ((managerListedCount || 0) > 0) {
+          navigate("/manager/properties");
+        } else {
+          navigate("/manager/home");
+        }
+        return;
+      }
+
+      // Tenants always go home
+      navigate("/tenant/home");
     } catch (e: any) {
       setError(e.message || "Login failed");
     } finally {
