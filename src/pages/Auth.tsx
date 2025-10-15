@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Building2, Users, Home, ArrowLeft, Upload } from "lucide-react";
 import rentoLogo from "@/assets/rento-logo-dark.svg";
+import { supabase } from "@/lib/supabase";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -31,6 +32,12 @@ const Auth = () => {
   // Login fields
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  // Signup password
+  const [signupPassword, setSignupPassword] = useState("");
+
+  // UI state
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -43,16 +50,103 @@ const Auth = () => {
     }
   };
 
-  const handleSignUp = () => {
-    if (userType === "tenant") navigate("/tenant/home");
-    else if (userType === "manager") navigate("/manager/home");
+  const navigateByRole = (role: "tenant" | "manager" | "broker") => {
+    if (role === "tenant") navigate("/tenant/home");
+    else if (role === "manager") navigate("/manager/home");
     else navigate("/broker/home");
   };
 
-  const handleLogin = () => {
-    if (userType === "tenant") navigate("/tenant/home");
-    else if (userType === "manager") navigate("/manager/home");
-    else navigate("/broker/home");
+  const handleSignUp = async () => {
+    setError(null);
+    setLoading(true);
+    try {
+      if (!email || !signupPassword) {
+        throw new Error("Email and password are required");
+      }
+
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password: signupPassword,
+      });
+      if (signUpError) throw signUpError;
+
+      const user = signUpData.user;
+      if (!user) throw new Error("Signup failed: missing user");
+
+      // Upsert profile with selected role and basic info
+      const fullName = `${firstName} ${lastName}`.trim();
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .upsert({ id: user.id, role: userType, full_name: fullName || null, phone: phone || null, avatar_url: photo || null }, { onConflict: "id" });
+      if (profileError) throw profileError;
+
+      // Store auth email for convenience
+      const { error: credError } = await supabase
+        .from("auth_credentials")
+        .upsert({ user_id: user.id, email }, { onConflict: "user_id" });
+      if (credError) throw credError;
+
+      // Insert role-specific row
+      if (userType === "tenant") {
+        const { error: tErr } = await supabase
+          .from("tenant_profiles")
+          .upsert({ user_id: user.id, occupation: occupation || null, how_heard: howHeard || null }, { onConflict: "user_id" });
+        if (tErr) throw tErr;
+      } else if (userType === "broker") {
+        const { error: bErr } = await supabase
+          .from("broker_profiles")
+          .upsert({ user_id: user.id, license_no: null, company: null }, { onConflict: "user_id" });
+        if (bErr) throw bErr;
+      } else if (userType === "manager") {
+        const { error: mErr } = await supabase
+          .from("manager_profiles")
+          .upsert({ user_id: user.id, company: null }, { onConflict: "user_id" });
+        if (mErr) throw mErr;
+      }
+
+      // Navigate by role
+      navigateByRole(userType);
+    } catch (e: any) {
+      setError(e.message || "Signup failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogin = async () => {
+    setError(null);
+    setLoading(true);
+    try {
+      if (!loginEmail || !loginPassword) {
+        throw new Error("Email and password are required");
+      }
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email: loginEmail,
+        password: loginPassword,
+      });
+      if (signInError) throw signInError;
+      const user = signInData.user;
+      if (!user) throw new Error("Login failed: missing user");
+
+      // Get profile to know role
+      const { data: profile, error: profErr } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+      if (profErr) throw profErr;
+
+      const role = profile?.role as "tenant" | "manager" | "broker" | undefined;
+      if (!role) throw new Error("No role found for user");
+      if (role !== userType) {
+        throw new Error(`This account is a ${role}. Switch to the ${role} tab to login.`);
+      }
+      navigateByRole(role);
+    } catch (e: any) {
+      setError(e.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const nextPhase = () => setSignupPhase(prev => Math.min(prev + 1, 3));
@@ -192,7 +286,7 @@ const Auth = () => {
                       />
                     </div>
 
-                    <div className="space-y-2">
+                  <div className="space-y-2">
                       <Label htmlFor="email">Email Address</Label>
                       <Input
                         id="email"
@@ -203,6 +297,18 @@ const Auth = () => {
                         className="h-12"
                       />
                     </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="Create a strong password"
+                      value={signupPassword}
+                      onChange={(e) => setSignupPassword(e.target.value)}
+                      className="h-12"
+                    />
+                  </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="howHeard">How did you hear about Rento?</Label>
@@ -302,9 +408,10 @@ const Auth = () => {
                     </Button>
                     <Button
                       onClick={handleSignUp}
+                      disabled={loading}
                       className="h-12 flex-1 bg-gradient-primary hover:opacity-90 transition-opacity"
                     >
-                      Complete Sign Up
+                      {loading ? "Signing up..." : "Complete Sign Up"}
                     </Button>
                   </div>
 
@@ -378,10 +485,15 @@ const Auth = () => {
 
               <Button
                 onClick={handleLogin}
+                disabled={loading}
                 className="w-full h-12 bg-gradient-primary hover:opacity-90 transition-opacity"
               >
-                Login
+                {loading ? "Logging in..." : "Login"}
               </Button>
+
+              {error && (
+                <p className="text-red-500 text-sm text-center">{error}</p>
+              )}
             </TabsContent>
           </Tabs>
         </div>

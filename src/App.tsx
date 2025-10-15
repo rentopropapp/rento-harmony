@@ -32,6 +32,7 @@ import ManagerBookings from "./pages/manager/ManagerBookings";
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
 import ManagerProfile from "./pages/manager/ManagerProfile";
 import ManagerTenants from "./pages/manager/ManagerTenants";
+import ManagerAddTenant from "./pages/manager/AddTenant";
 import PropertyList from "./pages/manager/propertylist";
 import ManagerExpenses from "./pages/manager/ManagerExpenses";
 import ManagerEditProperty from "./pages/manager/pmEditProperty";
@@ -85,6 +86,7 @@ const App = () => (
           <Route path="/manager/expenses" element={<ManagerExpenses />} />
           <Route path="/manager/profile" element={<ManagerProfile />} />
           <Route path="/manager/tenants" element={<ManagerTenants />} />
+          <Route path="/manager/add-tenant" element={<ManagerAddTenant />} />
           <Route path="/manager/properties" element={<PropertyList />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
