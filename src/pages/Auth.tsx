@@ -128,13 +128,23 @@ const Auth = () => {
       const user = signInData.user;
       if (!user) throw new Error("Login failed: missing user");
 
-      // Get profile to know role
-      const { data: profile, error: profErr } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .single();
-      if (profErr) throw profErr;
+      // Get profile to know role (with transient retry for schema cache)
+      const fetchProfileWithRetry = async (attempt = 1): Promise<{ role: string } | null> => {
+        const { data, error: profErr } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+        if (!profErr) return data as any;
+        const msg = String(profErr.message || "").toLowerCase();
+        const isSchemaCache = msg.includes("schema cache") || msg.includes("not found") || msg.includes("relation") || msg.includes("could not find the table");
+        if (isSchemaCache && attempt < 3) {
+          await new Promise((r) => setTimeout(r, 700 * attempt));
+          return fetchProfileWithRetry(attempt + 1);
+        }
+        throw profErr;
+      };
+      const profile = await fetchProfileWithRetry();
 
       const role = profile?.role as "tenant" | "manager" | "broker" | undefined;
       if (!role) throw new Error("No role found for user");
