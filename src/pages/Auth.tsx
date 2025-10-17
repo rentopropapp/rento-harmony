@@ -185,7 +185,7 @@ const Auth = () => {
           .eq("status", "listed");
         if (managerCountErr) throw managerCountErr;
         if ((managerListedCount || 0) > 0) {
-          navigate("/manager/properties");
+          navigate("/manager/propertylist");
         } else {
           navigate("/manager/home");
         }
