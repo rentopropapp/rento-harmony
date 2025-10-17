@@ -67,6 +67,9 @@ const Auth = () => {
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email,
         password: signupPassword,
+        options: {
+          emailRedirectTo: window.location.origin + "/", // after email confirmation, app opens; we will route based on session
+        },
       });
       if (signUpError) throw signUpError;
 
@@ -104,7 +107,13 @@ const Auth = () => {
         if (mErr) throw mErr;
       }
 
-      // Navigate by role
+      // If email confirmation is required, there won't be a session. Guide user to login
+      if (!signUpData.session) {
+        setActiveTab("login");
+        setError(null);
+        return;
+      }
+      // Navigate by role when session exists
       navigateByRole(userType);
     } catch (e: any) {
       setError(e.message || "Signup failed");
