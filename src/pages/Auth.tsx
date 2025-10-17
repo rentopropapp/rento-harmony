@@ -76,20 +76,25 @@ const Auth = () => {
       const user = signUpData.user;
       if (!user) throw new Error("Signup failed: missing user");
 
-      // Upsert profile with selected role and basic info
+      // If email confirmation is required, there won't be a session; skip DB writes due to RLS and ask user to login after verifying
+      if (!signUpData.session) {
+        setActiveTab("login");
+        setError(null);
+        return;
+      }
+
+      // We have a session → create profile rows now
       const fullName = `${firstName} ${lastName}`.trim();
       const { error: profileError } = await supabase
         .from("profiles")
         .upsert({ id: user.id, role: userType, full_name: fullName || null, phone: phone || null, avatar_url: photo || null }, { onConflict: "id" });
       if (profileError) throw profileError;
 
-      // Store auth email for convenience
       const { error: credError } = await supabase
         .from("auth_credentials")
         .upsert({ user_id: user.id, email }, { onConflict: "user_id" });
       if (credError) throw credError;
 
-      // Insert role-specific row
       if (userType === "tenant") {
         const { error: tErr } = await supabase
           .from("tenant_profiles")
@@ -107,13 +112,6 @@ const Auth = () => {
         if (mErr) throw mErr;
       }
 
-      // If email confirmation is required, there won't be a session. Guide user to login
-      if (!signUpData.session) {
-        setActiveTab("login");
-        setError(null);
-        return;
-      }
-      // Navigate by role when session exists
       navigateByRole(userType);
     } catch (e: any) {
       setError(e.message || "Signup failed");
@@ -155,8 +153,16 @@ const Auth = () => {
       };
       const profile = await fetchProfileWithRetry();
 
-      const role = profile?.role as "tenant" | "manager" | "broker" | undefined;
-      if (!role) throw new Error("No role found for user");
+      let role = profile?.role as "tenant" | "manager" | "broker" | undefined;
+      // If profile missing (first login after email verification), create it now with selected role
+      if (!role) {
+        const { error: upErr } = await supabase
+          .from("profiles")
+          .upsert({ id: user.id, role: userType }, { onConflict: "id" });
+        if (upErr) throw upErr;
+        role = userType;
+        await supabase.from("auth_credentials").upsert({ user_id: user.id, email: loginEmail }, { onConflict: "user_id" });
+      }
       if (role !== userType) {
         throw new Error(`This account is a ${role}. Switch to the ${role} tab to login.`);
       }
